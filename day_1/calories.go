@@ -2,7 +2,6 @@ package day1
 
 import (
 	"el-mike/advent-of-code/common"
-	"fmt"
 	"strconv"
 )
 
@@ -11,7 +10,7 @@ const (
 	TEST_INPUT_FILENAME = "test_input.txt"
 )
 
-func Calories() {
+func Calories() int {
 	scanner, err := common.GetFileScanner("./day_1/" + INPUT_FILENAME)
 
 	if err != nil {
@@ -58,5 +57,5 @@ func Calories() {
 		sum += x
 	}
 
-	fmt.Println(sum)
+	return sum
 }
