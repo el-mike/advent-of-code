@@ -2,7 +2,6 @@ package day2
 
 import (
 	"el-mike/advent-of-code/common"
-	"fmt"
 	"strings"
 )
 
@@ -66,7 +65,7 @@ func getPlayerShape(opponentShape int, desiredResult int) int {
 	}
 }
 
-func RockPaperScissors() {
+func RockPaperScissors() int {
 	scanner, err := common.GetFileScanner("./day_2/" + INPUT_FILENAME)
 
 	if err != nil {
@@ -87,5 +86,5 @@ func RockPaperScissors() {
 		totalScore += RESULT_SCORES[desiredResult] + SHAPE_SCORES[playerShape]
 	}
 
-	fmt.Printf("%d\n", totalScore)
+	return totalScore
 }
