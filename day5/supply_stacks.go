@@ -125,7 +125,11 @@ func SupplyStacks() string {
 			tmpStack.Push(item)
 		}
 
-		for i := 0; i < operation.Amount; i += 1 {
+		// We need to access tmpSize size, as using Stack() in loop declaration
+		// would return different number with each iteration.
+		tmpSize := tmpStack.Size()
+
+		for i := 0; i < tmpSize; i += 1 {
 			item, err := tmpStack.Pop()
 			if err != nil {
 				panic(err)
