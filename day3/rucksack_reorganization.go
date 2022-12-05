@@ -32,7 +32,7 @@ func getPriority(letter rune) int {
 }
 
 func RucksackReorganization() int {
-	scanner, err := common.GetFileScanner("./day_3/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day3/" + INPUT_FILENAME)
 	if err != nil {
 		panic(err)
 	}

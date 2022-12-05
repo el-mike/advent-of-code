@@ -11,7 +11,7 @@ const (
 )
 
 func Calories() int {
-	scanner, err := common.GetFileScanner("./day_1/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day1/" + INPUT_FILENAME)
 
 	if err != nil {
 		panic(err)
@@ -21,7 +21,6 @@ func Calories() int {
 	current := 0
 
 	for scanner.Scan() {
-
 		line := scanner.Text()
 
 		if line != "" {

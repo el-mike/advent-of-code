@@ -66,8 +66,7 @@ func getPlayerShape(opponentShape int, desiredResult int) int {
 }
 
 func RockPaperScissors() int {
-	scanner, err := common.GetFileScanner("./day_2/" + INPUT_FILENAME)
-
+	scanner, err := common.GetFileScanner("./day2/" + INPUT_FILENAME)
 	if err != nil {
 		panic(err)
 	}

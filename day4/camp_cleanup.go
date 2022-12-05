@@ -11,7 +11,7 @@ const (
 )
 
 func CampCleanup() int {
-	scanner, err := common.GetFileScanner("./day_4/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day4/" + INPUT_FILENAME)
 	if err != nil {
 		panic(err)
 	}
