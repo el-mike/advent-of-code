@@ -13,3 +13,18 @@ func GetKeyByValue[TKey comparable, TValue comparable](m map[TKey]TValue, target
 
 	return nilResult
 }
+
+// AnySatisfies - returns true if for any value in the map callback returns true,
+// false otherwise.
+func AnySatisfies[TKey comparable, TValue comparable](
+	m map[TKey]TValue,
+	cb func(key TKey, value TValue) bool,
+) bool {
+	for key, value := range m {
+		if cb(key, value) {
+			return true
+		}
+	}
+
+	return false
+}
