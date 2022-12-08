@@ -17,7 +17,7 @@ func (s *Stack[T]) Push(value T) {
 func (s *Stack[T]) Pop() (T, error) {
 	l := len(s.data)
 
-	if l == 0 {
+	if len(s.data) == 0 {
 		return s.getNull(), errors.New("Stack is empty")
 	}
 

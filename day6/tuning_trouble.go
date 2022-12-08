@@ -14,7 +14,7 @@ const (
 )
 
 func TuningTrouble() int {
-	scanner, err := common.GetFileScanner("./day6/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day6/" + TEST_INPUT_FILENAME)
 	if err != nil {
 		panic(err)
 	}
@@ -31,17 +31,20 @@ func TuningTrouble() int {
 		input += line
 	}
 
-	markerBuffer := make([]rune, MARKER_SIZE)
+	charsQueue := common.NewQueue[rune]()
 	charsMap := map[rune]int{}
 
 	for i, char := range input {
-		lastIndex := i % MARKER_SIZE
-
 		if i >= MARKER_SIZE {
-			charsMap[markerBuffer[lastIndex]] -= 1
+			lastChar, err := charsQueue.Dequeue()
+			if err != nil {
+				panic(err)
+			}
+
+			charsMap[lastChar] -= 1
 		}
 
-		markerBuffer[lastIndex] = char
+		charsQueue.Enqueue(char)
 		charsMap[char] += 1
 
 		if i >= MARKER_SIZE &&
