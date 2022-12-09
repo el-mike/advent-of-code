@@ -28,3 +28,17 @@ func AnySatisfies[TKey comparable, TValue comparable](
 
 	return false
 }
+
+func CountWhere[TKey comparable, TValue comparable](
+	m map[TKey]TValue,
+	cb func(key TKey, value TValue) bool,
+) int {
+	count := 0
+	for key, value := range m {
+		if cb(key, value) {
+			count += 1
+		}
+	}
+
+	return count
+}
