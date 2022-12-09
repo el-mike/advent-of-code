@@ -1,6 +1,14 @@
-package common
+package ds
 
-import "errors"
+type QueueEmptyException struct{}
+
+func NewQueueEmptyException() *QueueEmptyException {
+	return &QueueEmptyException{}
+}
+
+func (e *QueueEmptyException) Error() string {
+	return "Queue is empty"
+}
 
 type Queue[T any] struct {
 	data []T
@@ -16,7 +24,7 @@ func (q *Queue[T]) Enqueue(value T) {
 
 func (q *Queue[T]) Dequeue() (T, error) {
 	if len(q.data) == 0 {
-		return q.getNull(), errors.New("Queue is empty")
+		return q.getNull(), NewQueueEmptyException()
 	}
 
 	value := q.data[0]
@@ -31,7 +39,7 @@ func (q *Queue[T]) IsEmpty() bool {
 
 func (q *Queue[T]) Peek() (T, error) {
 	if len(q.data) == 0 {
-		return q.getNull(), errors.New("Queue is empty")
+		return q.getNull(), NewQueueEmptyException()
 	}
 
 	return q.data[0], nil

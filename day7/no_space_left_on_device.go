@@ -1,5 +1,62 @@
 package day7
 
+import (
+	"el-mike/advent-of-code/common"
+	"el-mike/advent-of-code/common/ds"
+)
+
+const (
+	InputFilename     = "input.txt"
+	TestInputFilename = "test_input.txt"
+)
+
+const (
+	MaxSize       = 100000
+	TotalSpace    = 70000000
+	RequiredSpace = 30000000
+)
+
 func NoSpaceLeftOnDevice() int {
-	return 0
+	scanner, err := common.GetFileScanner("./day7/" + InputFilename)
+	if err != nil {
+		panic(err)
+	}
+
+	fileSystemModel := NewFileSystemModel()
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if line == "" {
+			continue
+		}
+
+		fileSystemModel.parseLine(line)
+	}
+
+	// With the file system tree built, we can traverse it Depth-first to calculate
+	// the sizes of all directories.
+	fileSystemModel.Tree.TraverseDF(func(node *ds.TreeNode[*FileSystemElement]) {
+		if node.Parent != nil {
+			node.Parent.Data.Size += node.Data.Size
+		}
+	})
+
+	totalUsage := fileSystemModel.Tree.Root.Data.Size
+
+	unusedSize := TotalSpace - totalUsage
+	minSize := RequiredSpace - unusedSize
+
+	var candidate *ds.TreeNode[*FileSystemElement]
+
+	fileSystemModel.Tree.TraverseBF(func(node *ds.TreeNode[*FileSystemElement]) {
+		if node.Data.Type == DirElementType && node.Data.Size >= minSize {
+			if candidate == nil || node.Data.Size < candidate.Data.Size {
+				candidate = node
+			}
+		}
+	})
+
+	return candidate.Data.Size
+
 }

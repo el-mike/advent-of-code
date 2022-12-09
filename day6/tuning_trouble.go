@@ -2,6 +2,7 @@ package day6
 
 import (
 	"el-mike/advent-of-code/common"
+	"el-mike/advent-of-code/common/ds"
 )
 
 const (
@@ -31,7 +32,7 @@ func TuningTrouble() int {
 		input += line
 	}
 
-	charsQueue := common.NewQueue[rune]()
+	charsQueue := ds.NewQueue[rune]()
 	charsMap := map[rune]int{}
 
 	for i, char := range input {

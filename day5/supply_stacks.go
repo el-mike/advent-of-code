@@ -2,6 +2,7 @@ package day5
 
 import (
 	"el-mike/advent-of-code/common"
+	"el-mike/advent-of-code/common/ds"
 	"errors"
 	"math"
 	"strings"
@@ -18,8 +19,8 @@ const (
 
 // Returns initial crates state in a form of slice of stacks containing symbols.
 // Each stack has the same order as defined in the input.
-func parseInitialState(initialState *common.Stack[string], numColumns int) []*common.Stack[string] {
-	stacks := make([]*common.Stack[string], numColumns)
+func parseInitialState(initialState *ds.Stack[string], numColumns int) []*ds.Stack[string] {
+	stacks := make([]*ds.Stack[string], numColumns)
 
 	for !initialState.Empty() {
 		line, err := initialState.Pop()
@@ -29,7 +30,7 @@ func parseInitialState(initialState *common.Stack[string], numColumns int) []*co
 
 		for i := 0; i < numColumns; i += 1 {
 			if stacks[i] == nil {
-				stacks[i] = common.NewStack[string]()
+				stacks[i] = ds.NewStack[string]()
 			}
 
 			// Each column is 4 characters wide.
@@ -66,7 +67,7 @@ func SupplyStacks() string {
 		panic(err)
 	}
 
-	initialState := common.NewStack[string]()
+	initialState := ds.NewStack[string]()
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -114,7 +115,7 @@ func SupplyStacks() string {
 
 		// The simplest way to retain the order between two stacks is to introduce
 		// additional, temporary stack, which will have the reversed order of elements.
-		tmpStack := common.NewStack[string]()
+		tmpStack := ds.NewStack[string]()
 
 		for i := 0; i < operation.Amount; i += 1 {
 			item, err := source.Pop()
