@@ -107,9 +107,7 @@ func RopeBridge() int {
 		bodyPos[i] = []int{0, 0}
 	}
 
-	key := getKey(bodyPos[BodyLength-1])
-
-	visitedMap[key] = true
+	visitedMap[getKey(bodyPos[BodyLength-1])] = true
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -129,9 +127,7 @@ func RopeBridge() int {
 				handleBody(bodyPos[j], bodyPos[j+1])
 			}
 
-			key = getKey(bodyPos[BodyLength-1])
-			visitedMap[key] = true
-
+			visitedMap[getKey(bodyPos[BodyLength-1])] = true
 		}
 
 		renderer.render(bodyPos)

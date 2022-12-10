@@ -1,7 +1,7 @@
 package main
 
 import (
-	"el-mike/advent-of-code/day9"
+	"el-mike/advent-of-code/day8"
 	"fmt"
 )
 
@@ -13,6 +13,6 @@ func main() {
 	// fmt.Println(day5.SupplyStacks())
 	// fmt.Println(day6.TuningTrouble())
 	//fmt.Println(day7.NoSpaceLeftOnDevice())
-	//fmt.Println(day8.TreetopTreeHouse())
-	fmt.Println(day9.RopeBridge())
+	fmt.Println(day8.TreetopTreeHouse())
+	//fmt.Println(day9.RopeBridge())
 }
