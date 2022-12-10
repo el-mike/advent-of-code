@@ -40,15 +40,13 @@ func TreetopTreeHouse() int {
 	numCols := len(forestMap[0])
 
 	max := 0
-
-	// We start at 1 and end at len-2, to skip edge rows and columns,
-	// as they are always visible.
+	
 	for i = 0; i < numRows; i += 1 {
 		for j := 0; j < numCols; j += 1 {
 			current := forestMap[i][j]
 
 			numLeft, numRight, numUp, numDown := 0, 0, 0, 0
-			
+
 			for k := i - 1; k >= 0; k -= 1 {
 				numUp += 1
 
