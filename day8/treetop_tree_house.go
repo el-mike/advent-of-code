@@ -40,7 +40,7 @@ func TreetopTreeHouse() int {
 	numCols := len(forestMap[0])
 
 	max := 0
-	
+
 	for i = 0; i < numRows; i += 1 {
 		for j := 0; j < numCols; j += 1 {
 			current := forestMap[i][j]

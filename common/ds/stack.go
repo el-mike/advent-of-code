@@ -1,6 +1,14 @@
 package ds
 
-import "errors"
+type StackEmptyException struct{}
+
+func NewStackEmptyException() *StackEmptyException {
+	return &StackEmptyException{}
+}
+
+func (e *StackEmptyException) Error() string {
+	return "Stack is empty"
+}
 
 type Stack[T any] struct {
 	data []T
@@ -18,7 +26,7 @@ func (s *Stack[T]) Pop() (T, error) {
 	l := len(s.data)
 
 	if len(s.data) == 0 {
-		return s.getNull(), errors.New("Stack is empty")
+		return s.getNull(), NewStackEmptyException()
 	}
 
 	value := s.data[l-1]
@@ -35,7 +43,7 @@ func (s *Stack[T]) Peek() (T, error) {
 	l := len(s.data)
 
 	if l == 0 {
-		return s.getNull(), errors.New("Stack is empty")
+		return s.getNull(), NewStackEmptyException()
 	}
 
 	return s.data[l-1], nil
