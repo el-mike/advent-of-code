@@ -1,8 +1,6 @@
 package main
 
-import (
-	"el-mike/advent-of-code/day10"
-)
+import "el-mike/advent-of-code/day11"
 
 func main() {
 	// day1.Calories()
@@ -14,5 +12,6 @@ func main() {
 	//fmt.Println(day7.NoSpaceLeftOnDevice())
 	//fmt.Println(day8.TreetopTreeHouse())
 	//fmt.Println(day9.RopeBridge())
-	day10.CathodeRayTube()
+	//day10.CathodeRayTube()
+	day11.MonkeyInTheMiddle()
 }
