@@ -29,8 +29,7 @@ func HillClimbingAlgorithm() {
 		gridStr = append(gridStr, line)
 	}
 
-	grid := NewGridModel(len(gridStr), len(gridStr[0]))
-	grid.Parse(gridStr)
+	grid := NewGridModel(gridStr)
 
 	var possibleStarts []*GridCell
 

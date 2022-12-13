@@ -13,11 +13,29 @@ type GridModel struct {
 	End  *GridCell
 }
 
-func NewGridModel(r, c int) *GridModel {
+func NewGridModel(gridStr []string) *GridModel {
+	var grid [][]*GridCell
+	var end *GridCell
+
+	for x, line := range gridStr {
+		grid = append(grid, []*GridCell{})
+
+		for y, r := range line {
+			cell := NewGridCell(x, y, r)
+
+			grid[x] = append(grid[x], cell)
+
+			if cell.Char == 'E' {
+				end = cell
+			}
+		}
+	}
+
 	return &GridModel{
-		Grid: [][]*GridCell{},
-		Rows: r,
-		Cols: c,
+		Grid: grid,
+		Rows: len(grid),
+		Cols: len(grid[0]),
+		End:  end,
 	}
 }
 
@@ -52,22 +70,6 @@ func (g *GridModel) GetNeighbors(cell *GridCell) []*GridCell {
 	return neighbors
 }
 
-func (g *GridModel) Parse(gridStr []string) {
-	for x, line := range gridStr {
-		g.Grid = append(g.Grid, []*GridCell{})
-
-		for y, r := range line {
-			cell := NewGridCell(x, y, r)
-
-			g.Grid[x] = append(g.Grid[x], cell)
-
-			if cell.Char == 'E' {
-				g.End = cell
-			}
-		}
-	}
-}
-
 func (g *GridModel) ForEach(cb func(cell *GridCell, x, y int)) {
 	for x := range g.Grid {
 		for y := range g.Grid[x] {
@@ -79,7 +81,6 @@ func (g *GridModel) ForEach(cb func(cell *GridCell, x, y int)) {
 }
 
 func (g *GridModel) Render() {
-
 	g.ForEach(func(cell *GridCell, x, y int) {
 		fmt.Print(string(cell.Char))
 
