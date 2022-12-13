@@ -1,6 +1,9 @@
 package day12
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/fatih/color"
+)
 
 const (
 	AsciiLowercaseA = 97
@@ -80,9 +83,23 @@ func (g *GridModel) ForEach(cb func(cell *GridCell, x, y int)) {
 	}
 }
 
-func (g *GridModel) Render() {
+func (g *GridModel) Render(path []*GridCell) {
 	g.ForEach(func(cell *GridCell, x, y int) {
-		fmt.Print(string(cell.Char))
+		isPath := false
+		for _, pathCell := range path {
+			if cell.Same(pathCell) {
+				isPath = true
+				break
+			}
+		}
+
+		charStr := string(cell.Char)
+		if isPath {
+			c := color.New(color.FgGreen)
+			c.Print(charStr)
+		} else {
+			fmt.Print(charStr)
+		}
 
 		if y == (g.Cols - 1) {
 			fmt.Println()

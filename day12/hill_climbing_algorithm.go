@@ -39,7 +39,7 @@ func HillClimbingAlgorithm() {
 		}
 	})
 
-	var distances []int
+	var paths []*ds.Stack[*GridCell]
 
 	for _, start := range possibleStarts {
 		path := ds.NewStack[*GridCell]()
@@ -58,15 +58,28 @@ func HillClimbingAlgorithm() {
 			continue
 		}
 
-		distances = append(distances, path.Size())
+		paths = append(paths, path)
 	}
 
-	min := distances[0]
-	for _, distance := range distances {
-		if distance < min {
-			min = distance
+	min := paths[0]
+	for _, path := range paths {
+		if path.Size() < min.Size() {
+			min = path
 		}
 	}
 
-	fmt.Print(min)
+	fmt.Print(min.Size())
+
+	var pathSlice []*GridCell
+
+	for !min.Empty() {
+		pathCell, err := min.Pop()
+		if err != nil {
+			panic(err)
+		}
+
+		pathSlice = append(pathSlice, pathCell)
+	}
+
+	grid.Render(pathSlice)
 }
