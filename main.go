@@ -1,7 +1,7 @@
 package main
 
 import (
-	"el-mike/advent-of-code/day13"
+	"el-mike/advent-of-code/day14"
 )
 
 func main() {
@@ -17,5 +17,6 @@ func main() {
 	//day10.CathodeRayTube()
 	//day11.MonkeyInTheMiddle()
 	//day12.HillClimbingAlgorithm()
-	day13.DistressSignal()
+	// day13.DistressSignal()
+	day14.RegolithReservoir()
 }
