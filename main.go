@@ -1,8 +1,6 @@
 package main
 
-import (
-	"el-mike/advent-of-code/day14"
-)
+import "el-mike/advent-of-code/day15"
 
 func main() {
 	// day1.Calories()
@@ -18,5 +16,5 @@ func main() {
 	//day11.MonkeyInTheMiddle()
 	//day12.HillClimbingAlgorithm()
 	// day13.DistressSignal()
-	day14.RegolithReservoir()
+	day15.BeaconExclusionZone()
 }

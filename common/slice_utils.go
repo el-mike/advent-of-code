@@ -10,3 +10,15 @@ func Contains[T comparable](slice []T, value T) bool {
 
 	return false
 }
+
+func RemoveDuplicates[T comparable](slice []T) []T {
+	var result []T
+
+	for _, x := range slice {
+		if !Contains[T](result, x) {
+			result = append(result, x)
+		}
+	}
+
+	return result
+}

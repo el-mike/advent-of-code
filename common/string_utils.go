@@ -6,7 +6,7 @@ import (
 )
 
 func GetNumbersFromLine(line string) ([]int, error) {
-	re := regexp.MustCompile("[0-9]+")
+	re := regexp.MustCompile("-?[0-9]+")
 
 	results := re.FindAllString(line, -1)
 
