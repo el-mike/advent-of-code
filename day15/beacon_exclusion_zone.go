@@ -4,7 +4,6 @@ import (
 	"el-mike/advent-of-code/common"
 	"fmt"
 	"log"
-	"sort"
 	"sync"
 	"time"
 )
@@ -121,28 +120,6 @@ func BeaconExclusionZone() {
 	log.Printf("Took %s", elapsed)
 }
 
-func testRanges(ranges [][]int) (bool, int) {
-	sort.Slice(ranges, func(i, j int) bool {
-		return ranges[i][0] < ranges[j][0]
-	})
-
-	openRange := ranges[0]
-
-	for i := 1; i < len(ranges); i += 1 {
-		current := ranges[i]
-
-		if !overlap(current, openRange) {
-			return false, openRange[1]
-		}
-
-		if current[1] > openRange[1] {
-			openRange[1] = current[1]
-		}
-	}
-
-	return true, -1
-}
-
 func getDistance(sensor, beacon []int) int {
 	sx, sy, bx, by := sensor[0], sensor[1], beacon[0], beacon[1]
 
@@ -162,8 +139,4 @@ func getDistance(sensor, beacon []int) int {
 	}
 
 	return dx + dy
-}
-
-func overlap(source, target []int) bool {
-	return source[0] <= target[1] && source[1] >= target[0]
 }

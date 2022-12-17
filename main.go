@@ -16,5 +16,5 @@ func main() {
 	//day11.MonkeyInTheMiddle()
 	//day12.HillClimbingAlgorithm()
 	// day13.DistressSignal()
-	day15.BeaconExclusionZone()
+	day15.BeaconExclusionZone2()
 }
