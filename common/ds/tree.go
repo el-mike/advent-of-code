@@ -24,8 +24,6 @@ func (tn *TreeNode[T]) Insert(data T) *TreeNode[T] {
 
 type Tree[T any] struct {
 	Root *TreeNode[T]
-
-	TraversalMethod uint8
 }
 
 func NewTree[T any](root *TreeNode[T]) *Tree[T] {
