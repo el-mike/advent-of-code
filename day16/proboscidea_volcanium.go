@@ -42,8 +42,8 @@ func ProboscideaVolcanium() {
 
 	fmt.Println(rootValve.Name)
 
-	queue := ds.NewPriorityQueue[int](func(data []int, i, j int) bool {
-		return data[i] > data[j]
+	queue := ds.NewPriorityQueue[int](func(item int) int {
+		return item
 	})
 
 	initialValues := []int{9, 11, 18, 13, 15, 14, 7, 8, 12, 10, 4, 6, 3}
@@ -51,9 +51,10 @@ func ProboscideaVolcanium() {
 	for _, x := range initialValues {
 		queue.Enqueue(x)
 	}
-	
-	max, _ := queue.Dequeue()
-	fmt.Println(max)
+
+	for !queue.IsEmpty() {
+		fmt.Println(queue.Dequeue())
+	}
 
 	elapsed := time.Since(start)
 	log.Printf("Took %s", elapsed)

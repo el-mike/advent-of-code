@@ -4,9 +4,9 @@ type PriorityQueue[T any] struct {
 	heap *MaxHeap[T]
 }
 
-func NewPriorityQueue[T any](moreFn func(data []T, i, j int) bool) *PriorityQueue[T] {
+func NewPriorityQueue[T any](getPriorityFn func(item T) int) *PriorityQueue[T] {
 	return &PriorityQueue[T]{
-		heap: NewMaxHeap[T](moreFn),
+		heap: NewMaxHeap[T](getPriorityFn),
 	}
 }
 
