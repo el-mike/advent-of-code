@@ -4,9 +4,8 @@ import (
 	"el-mike/advent-of-code/common"
 	"el-mike/advent-of-code/common/ds"
 	"fmt"
-	"regexp"
-	"strconv"
-	"strings"
+	"log"
+	"time"
 )
 
 const (
@@ -14,31 +13,19 @@ const (
 	TestInputFilename = "test_input.txt"
 )
 
-func parseLine(line string) *Valve {
-	re := regexp.MustCompile(`Valve ([A-Z]{2}).*=(\d+);.*valves (.*)`)
-
-	results := re.FindAllStringSubmatch(line, -1)[0]
-
-	// index "0" contains entire match.
-	name := results[1]
-	flowRate, err := strconv.Atoi(results[2])
-	if err != nil {
-		panic(err)
-	}
-
-	leadsTo := strings.Split(results[3], ", ")
-
-	return NewValve(name, flowRate, leadsTo)
-}
+const TimeLimit = 30
 
 func ProboscideaVolcanium() {
+	start := time.Now()
+
 	scanner, err := common.GetFileScanner("./day16/" + TestInputFilename)
 	if err != nil {
 		panic(err)
 	}
 
-	var valvesMap ValvesMap
-	var rootValve *Valve
+	parser := NewParser()
+
+	valvesMap := ValvesMap{}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -47,33 +34,27 @@ func ProboscideaVolcanium() {
 			continue
 		}
 
-		valve := parseLine(line)
+		valve := parser.ParseLine(line)
 		valvesMap[valve.Name] = valve
-
-		if rootValve == nil {
-			rootValve = valve
-		}
-
-		fmt.Println(valve.Name)
 	}
 
-	var bestPath *Path
+	rootValve := valvesMap["AA"]
 
-	valvesTree := ds.NewTree[*Valve](ds.NewTreeNode[*Valve](rootValve, nil))
+	fmt.Println(rootValve.Name)
 
-	stepInto := func(
-		node *ds.TreeNode[*Valve],
-		currentPath *Path,
-		minutesLeft int,
-	) int {
-		minutesLeft -= 1
-		if minutesLeft == 0 {
-			return 0
-		}
+	queue := ds.NewPriorityQueue[int](func(data []int, i, j int) bool {
+		return data[i] > data[j]
+	})
 
+	initialValues := []int{9, 11, 18, 13, 15, 14, 7, 8, 12, 10, 4, 6, 3}
+
+	for _, x := range initialValues {
+		queue.Enqueue(x)
 	}
+	
+	max, _ := queue.Dequeue()
+	fmt.Println(max)
 
-	for _, child := range valvesTree.Root {
-		stepInto(child, NewP)
-	}
+	elapsed := time.Since(start)
+	log.Printf("Took %s", elapsed)
 }

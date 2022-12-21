@@ -22,3 +22,15 @@ func RemoveDuplicates[T comparable](slice []T) []T {
 
 	return result
 }
+
+func Filter[T comparable](slice []T, predictor func(x T) bool) []T {
+	var result []T
+
+	for _, x := range slice {
+		if predictor(x) {
+			result = append(result, x)
+		}
+	}
+
+	return result
+}
