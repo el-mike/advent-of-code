@@ -31,13 +31,13 @@ func (bh *BaseHeap[T]) IsEmpty() bool {
 	return len(bh.Data) == 0
 }
 
-func (mh *MinHeap[T]) Build(data []T) {
+func (bh *BaseHeap[T]) Build(data []T) {
 	tmp := make([]T, len(data))
 	copy(tmp, data)
 
-	mh.Data = tmp
+	bh.Data = tmp
 
-	mh.heapify()
+	bh.heapify()
 }
 
 func (bh *BaseHeap[T]) siftUp(currentIndex int) {
@@ -80,11 +80,11 @@ func (bh *BaseHeap[T]) siftDown(currentIndex int) {
 
 // heapify - ensures that heap property is preserved. It uses sifting down, as it's
 // faster than sifting up (the lower levels have more elements)
-func (mh *MinHeap[T]) heapify() {
+func (bh *BaseHeap[T]) heapify() {
 	// We could start i at (size / 2) - 1, as the last level cannot be sifted down,
 	// but it's taken care of automatically in siftDown method (loop's condition).
-	for i := len(mh.Data) - 1; i >= 0; i -= 1 {
-		mh.siftDown(i)
+	for i := len(bh.Data) - 1; i >= 0; i -= 1 {
+		bh.siftDown(i)
 	}
 }
 

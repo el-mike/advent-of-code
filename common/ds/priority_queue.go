@@ -1,40 +1,40 @@
 package ds
 
-type PriorityQueue[T any] struct {
-	heap *MaxHeap[T]
+type MinPriorityQueue[T any] struct {
+	heap *MinHeap[T]
 }
 
-func NewPriorityQueue[T any](getPriorityFn func(item T) int) *PriorityQueue[T] {
-	return &PriorityQueue[T]{
-		heap: NewMaxHeap[T](getPriorityFn),
+func NewMinPriorityQueue[T any](getPriorityFn func(item T) int) *MinPriorityQueue[T] {
+	return &MinPriorityQueue[T]{
+		heap: NewMinHeap[T](getPriorityFn),
 	}
 }
 
-func (pq *PriorityQueue[T]) Enqueue(value T) {
+func (pq *MinPriorityQueue[T]) Enqueue(value T) {
 	pq.heap.Insert(value)
 }
 
-func (pq *PriorityQueue[T]) Dequeue() (T, error) {
+func (pq *MinPriorityQueue[T]) Dequeue() (T, error) {
 	if pq.heap.IsEmpty() {
 		return pq.getNull(), NewQueueEmptyException()
 	}
 
-	return pq.heap.ExtractMax(), nil
+	return pq.heap.ExtractMin(), nil
 }
 
-func (pq *PriorityQueue[T]) IsEmpty() bool {
+func (pq *MinPriorityQueue[T]) IsEmpty() bool {
 	return pq.heap.IsEmpty()
 }
 
-func (pq *PriorityQueue[T]) Peek() (T, error) {
+func (pq *MinPriorityQueue[T]) Peek() (T, error) {
 	if pq.heap.IsEmpty() {
 		return pq.getNull(), NewQueueEmptyException()
 	}
 
-	return pq.heap.GetMax(), nil
+	return pq.heap.GetMin(), nil
 }
 
-func (pq *PriorityQueue[T]) getNull() T {
+func (pq *MinPriorityQueue[T]) getNull() T {
 	var null T
 
 	return null

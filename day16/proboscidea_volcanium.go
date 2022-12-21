@@ -8,12 +8,22 @@ import (
 	"time"
 )
 
+type PathsMap map[string]map[string]int
+type OpenedMap map[string]bool
+
+type Toolbox struct {
+	BestPath  *Path
+	ValvesMap ValvesMap
+	PathsMap  PathsMap
+}
+
 const (
 	InputFilename     = "input.txt"
 	TestInputFilename = "test_input.txt"
 )
 
 const TimeLimit = 30
+const StartValveName = "AA"
 
 func ProboscideaVolcanium() {
 	start := time.Now()
@@ -38,24 +48,87 @@ func ProboscideaVolcanium() {
 		valvesMap[valve.Name] = valve
 	}
 
-	rootValve := valvesMap["AA"]
+	graphBuilder := NewGraphBuilder(valvesMap)
+	graph := graphBuilder.Build()
 
-	fmt.Println(rootValve.Name)
+	// We subtract one because of "AA" valve, which needs to be part of the graph,
+	// but cannot be opened.
+	numValves := len(graph.AdjacencyList) - 1
 
-	queue := ds.NewPriorityQueue[int](func(item int) int {
-		return item
-	})
+	pathsMap := PathsMap{}
 
-	initialValues := []int{9, 11, 18, 13, 15, 14, 7, 8, 12, 10, 4, 6, 3}
+	for sourceId, _ := range graph.AdjacencyList {
+		pathsMap[sourceId] = map[string]int{}
 
-	for _, x := range initialValues {
-		queue.Enqueue(x)
+		for targetId, _ := range graph.AdjacencyList {
+			if sourceId == targetId {
+				continue
+			}
+
+			source := &ds.Vertex[*Valve]{ID: sourceId, Data: valvesMap[sourceId], Weight: 0}
+			path := Dijkstra(graph, source, targetId)
+
+			pathsMap[sourceId][targetId] = path.Cost
+		}
 	}
 
-	for !queue.IsEmpty() {
-		fmt.Println(queue.Dequeue())
+	toolbox := &Toolbox{
+		BestPath:  NewPath(numValves),
+		ValvesMap: valvesMap,
+		PathsMap:  pathsMap,
 	}
+
+	startPaths := pathsMap[StartValveName]
+
+	for targetId, _ := range startPaths {
+		path := NewPath(numValves)
+		path.AddStep(StartValveName)
+
+		step(toolbox, TimeLimit, StartValveName, targetId, path)
+	}
+
+	fmt.Println(toolbox.BestPath.Total)
 
 	elapsed := time.Since(start)
 	log.Printf("Took %s", elapsed)
+}
+
+func step(
+	toolbox *Toolbox,
+	timeLeft int,
+	cameFrom string,
+	currentId string,
+	currentPath *Path,
+) {
+	currentPath.AddStep(currentId)
+
+	// As we always open a valve upon a single step, we add "1" as valve opening time.
+	timeSpent := toolbox.PathsMap[cameFrom][currentId] + 1
+	timeLeft -= timeSpent
+
+	if timeLeft <= 0 {
+		if currentPath.Total > toolbox.BestPath.Total {
+			toolbox.BestPath = currentPath
+		}
+
+		return
+	}
+
+	currentPath.Open(currentId)
+	currentPath.Total += toolbox.ValvesMap[currentId].FlowRate * timeLeft
+
+	hasCandidatesLeft := false
+
+	for candidateId, _ := range toolbox.PathsMap[currentId] {
+		if candidateId != StartValveName && !currentPath.HasBeenOpened(candidateId) {
+			hasCandidatesLeft = true
+			step(toolbox, timeLeft, currentId, candidateId, currentPath.Clone())
+		}
+	}
+
+	if !hasCandidatesLeft {
+		if currentPath.Total > toolbox.BestPath.Total {
+			toolbox.BestPath = currentPath
+		}
+	}
 }

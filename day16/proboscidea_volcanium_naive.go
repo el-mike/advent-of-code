@@ -9,7 +9,9 @@ import (
 )
 
 type ResultWrapper struct {
+	Max      int
 	bestPath *Path
+	PathStr  string
 }
 
 func ProboscideaVolcaniumNaive() {
@@ -36,9 +38,16 @@ func ProboscideaVolcaniumNaive() {
 	}
 
 	rootValve := valvesMap["AA"]
+	numValves := 0
+
+	for _, valve := range valvesMap {
+		if valve.FlowRate >= 0 {
+			numValves += 1
+		}
+	}
 
 	resultWrapper := &ResultWrapper{
-		bestPath: NewPath(),
+		bestPath: NewPath(numValves),
 	}
 
 	wg := sync.WaitGroup{}
@@ -47,7 +56,7 @@ func ProboscideaVolcaniumNaive() {
 		wg.Add(1)
 
 		go func(valveName string) {
-			path := NewPath()
+			path := NewPath(numValves)
 			path.AddStep(rootValve.Name)
 
 			stepInto(TimeLimit, valvesMap[valveName], path, rootValve.Name, resultWrapper, valvesMap)
@@ -75,7 +84,7 @@ func stepInto(
 	currentPath.AddStep(currentValve.Name)
 	minutesLeft -= 1
 
-	if minutesLeft == 0 {
+	if minutesLeft == 0 || currentPath.AllValvesOpened() {
 		if currentPath.Total > resultWrapper.bestPath.Total {
 			resultWrapper.bestPath = currentPath
 		}
@@ -83,13 +92,11 @@ func stepInto(
 		return
 	}
 
-	// candidateValves contain all the connected valves that are not the previous one.
-	// This way we eliminate circular paths.
-	candidateValves := common.Filter[string](currentValve.LeadsTo, func(x string) bool {
-		return x != cameFrom
-	})
+	for _, valveName := range currentValve.LeadsTo {
+		if valveName == cameFrom {
+			continue
+		}
 
-	for _, valveName := range candidateValves {
 		stepInto(minutesLeft, valvesMap[valveName], currentPath.Clone(), currentValve.Name, resultWrapper, valvesMap)
 	}
 
