@@ -15,15 +15,6 @@ type HelperContext struct {
 	CostsMap  CostsMap
 }
 
-func (hc *HelperContext) Clone() *HelperContext {
-	return &HelperContext{
-		NumValves: hc.NumValves,
-		BestPath:  hc.BestPath.Clone(),
-		ValvesMap: hc.ValvesMap,
-		CostsMap:  hc.CostsMap,
-	}
-}
-
 const (
 	InputFilename     = "input.txt"
 	TestInputFilename = "test_input.txt"
