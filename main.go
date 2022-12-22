@@ -1,7 +1,12 @@
 package main
 
-import "el-mike/advent-of-code/day16"
+import (
+	"el-mike/advent-of-code/common"
+	"el-mike/advent-of-code/day16"
+)
 
 func main() {
-	day16.ProboscideaVolcanium()
+	runner := common.NewRunner()
+
+	runner.RunAndMeasure(day16.ProboscideaVolcanium)
 }

@@ -42,3 +42,14 @@ func CountWhere[TKey comparable, TValue comparable](
 
 	return count
 }
+
+// CopyMap - returns a shallow copy of a given map.
+func CopyMap[TKey comparable, TValue any](m map[TKey]TValue) map[TKey]TValue {
+	mapCopy := map[TKey]TValue{}
+
+	for key, value := range m {
+		mapCopy[key] = value
+	}
+
+	return mapCopy
+}

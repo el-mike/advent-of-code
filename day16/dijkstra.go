@@ -96,3 +96,30 @@ func Dijkstra(
 
 	return result
 }
+
+func dijkstraTest() {
+	testGraph := ds.NewWeightedGraph[*Valve]()
+
+	vA := &ds.Vertex[*Valve]{ID: "A"}
+	vB := &ds.Vertex[*Valve]{ID: "B"}
+	vC := &ds.Vertex[*Valve]{ID: "C"}
+	vD := &ds.Vertex[*Valve]{ID: "D"}
+	vE := &ds.Vertex[*Valve]{ID: "E"}
+
+	testGraph.AddVertex(vA)
+	testGraph.AddVertex(vB)
+	testGraph.AddVertex(vC)
+	testGraph.AddVertex(vD)
+	testGraph.AddVertex(vE)
+
+	testGraph.AddEdge(vA, vB, 6)
+	testGraph.AddEdge(vA, vD, 1)
+	testGraph.AddEdge(vB, vD, 2)
+	testGraph.AddEdge(vB, vE, 2)
+	testGraph.AddEdge(vC, vB, 5)
+	testGraph.AddEdge(vC, vE, 5)
+	testGraph.AddEdge(vD, vE, 1)
+
+	Dijkstra(testGraph, vA, vC.ID)
+
+}

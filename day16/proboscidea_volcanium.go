@@ -4,17 +4,24 @@ import (
 	"el-mike/advent-of-code/common"
 	"el-mike/advent-of-code/common/ds"
 	"fmt"
-	"log"
-	"time"
 )
 
-type PathsMap map[string]map[string]int
-type OpenedMap map[string]bool
+type CostsMap map[string]map[string]int
 
-type Toolbox struct {
+type HelperContext struct {
+	NumValves int
 	BestPath  *Path
 	ValvesMap ValvesMap
-	PathsMap  PathsMap
+	CostsMap  CostsMap
+}
+
+func (hc *HelperContext) Clone() *HelperContext {
+	return &HelperContext{
+		NumValves: hc.NumValves,
+		BestPath:  hc.BestPath.Clone(),
+		ValvesMap: hc.ValvesMap,
+		CostsMap:  hc.CostsMap,
+	}
 }
 
 const (
@@ -22,19 +29,16 @@ const (
 	TestInputFilename = "test_input.txt"
 )
 
-const TimeLimit = 30
+const TimeLimit = 26
 const StartValveName = "AA"
 
 func ProboscideaVolcanium() {
-	start := time.Now()
-
-	scanner, err := common.GetFileScanner("./day16/" + TestInputFilename)
+	scanner, err := common.GetFileScanner("./day16/" + InputFilename)
 	if err != nil {
 		panic(err)
 	}
 
 	parser := NewParser()
-
 	valvesMap := ValvesMap{}
 
 	for scanner.Scan() {
@@ -55,12 +59,12 @@ func ProboscideaVolcanium() {
 	// but cannot be opened.
 	numValves := len(graph.AdjacencyList) - 1
 
-	pathsMap := PathsMap{}
+	costsMap := CostsMap{}
 
-	for sourceId, _ := range graph.AdjacencyList {
-		pathsMap[sourceId] = map[string]int{}
+	for sourceId := range graph.AdjacencyList {
+		costsMap[sourceId] = map[string]int{}
 
-		for targetId, _ := range graph.AdjacencyList {
+		for targetId := range graph.AdjacencyList {
 			if sourceId == targetId {
 				continue
 			}
@@ -68,67 +72,75 @@ func ProboscideaVolcanium() {
 			source := &ds.Vertex[*Valve]{ID: sourceId, Data: valvesMap[sourceId], Weight: 0}
 			path := Dijkstra(graph, source, targetId)
 
-			pathsMap[sourceId][targetId] = path.Cost
+			costsMap[sourceId][targetId] = path.Cost
 		}
 	}
 
-	toolbox := &Toolbox{
+	context := &HelperContext{
+		NumValves: numValves,
 		BestPath:  NewPath(numValves),
 		ValvesMap: valvesMap,
-		PathsMap:  pathsMap,
+		CostsMap:  costsMap,
 	}
 
-	startPaths := pathsMap[StartValveName]
+	candidates := context.CostsMap[StartValveName]
 
-	for targetId, _ := range startPaths {
-		path := NewPath(numValves)
-		path.AddStep(StartValveName)
-
-		step(toolbox, TimeLimit, StartValveName, targetId, path)
+	for candidateId := range candidates {
+		path := NewPath(context.NumValves)
+		step(context, TimeLimit, StartValveName, candidateId, path, 1)
 	}
 
-	fmt.Println(toolbox.BestPath.Total)
-
-	elapsed := time.Since(start)
-	log.Printf("Took %s", elapsed)
+	fmt.Println(context.BestPath.Total)
 }
 
 func step(
-	toolbox *Toolbox,
+	context *HelperContext,
 	timeLeft int,
 	cameFrom string,
 	currentId string,
 	currentPath *Path,
+	playersLeft int,
 ) {
-	currentPath.AddStep(currentId)
-
 	// As we always open a valve upon a single step, we add "1" as valve opening time.
-	timeSpent := toolbox.PathsMap[cameFrom][currentId] + 1
+	timeSpent := context.CostsMap[cameFrom][currentId] + 1
 	timeLeft -= timeSpent
 
 	if timeLeft <= 0 {
-		if currentPath.Total > toolbox.BestPath.Total {
-			toolbox.BestPath = currentPath
+		if currentPath.Total > context.BestPath.Total {
+			context.BestPath = currentPath
 		}
 
 		return
 	}
 
 	currentPath.Open(currentId)
-	currentPath.Total += toolbox.ValvesMap[currentId].FlowRate * timeLeft
+	currentPath.Total += context.ValvesMap[currentId].FlowRate * timeLeft
+
+	// A bit of heuristic touch - we can assume that most efficient paths distribution will be
+	// around 50/50, therefore we only simulate second player if the first one already explored
+	// some paths, but not too many.
+	if playersLeft > 0 && len(currentPath.Opened) > 5 && len(currentPath.Opened) < 12 {
+		// For given state (currentPath) run simulation for the second player.
+		for candidateId := range context.CostsMap[StartValveName] {
+			if candidateId != StartValveName && !currentPath.HasBeenOpened(candidateId) {
+				path := currentPath.Clone()
+				step(context, TimeLimit, StartValveName, candidateId, path, playersLeft-1)
+			}
+		}
+	}
 
 	hasCandidatesLeft := false
 
-	for candidateId, _ := range toolbox.PathsMap[currentId] {
+	for candidateId := range context.CostsMap[currentId] {
 		if candidateId != StartValveName && !currentPath.HasBeenOpened(candidateId) {
 			hasCandidatesLeft = true
-			step(toolbox, timeLeft, currentId, candidateId, currentPath.Clone())
+			step(context, timeLeft, currentId, candidateId, currentPath.Clone(), playersLeft)
 		}
 	}
 
 	if !hasCandidatesLeft {
-		if currentPath.Total > toolbox.BestPath.Total {
-			toolbox.BestPath = currentPath
+		if currentPath.Total > context.BestPath.Total {
+			context.BestPath = currentPath
 		}
 	}
 }

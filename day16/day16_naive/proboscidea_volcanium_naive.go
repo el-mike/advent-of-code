@@ -14,7 +14,14 @@ type ResultWrapper struct {
 	PathStr  string
 }
 
-func ProboscideaVolcaniumNaive() {
+const (
+	InputFilename     = "input.txt"
+	TestInputFilename = "test_input.txt"
+)
+
+const TimeLimit = 30
+
+func ProboscideaVolcanium() {
 	start := time.Now()
 
 	scanner, err := common.GetFileScanner("./day16/" + TestInputFilename)
@@ -57,7 +64,6 @@ func ProboscideaVolcaniumNaive() {
 
 		go func(valveName string) {
 			path := NewPath(numValves)
-			path.AddStep(rootValve.Name)
 
 			stepInto(TimeLimit, valvesMap[valveName], path, rootValve.Name, resultWrapper, valvesMap)
 			wg.Done()
@@ -81,7 +87,6 @@ func stepInto(
 	resultWrapper *ResultWrapper,
 	valvesMap ValvesMap,
 ) {
-	currentPath.AddStep(currentValve.Name)
 	minutesLeft -= 1
 
 	if minutesLeft == 0 || currentPath.AllValvesOpened() {
