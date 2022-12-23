@@ -1,5 +1,7 @@
 package day17
 
+import "math"
+
 type Coord [2]int
 
 type Coords []Coord
@@ -33,4 +35,18 @@ func (c Coords) GetMaxY() int {
 	}
 
 	return max
+}
+
+func (c Coords) GetMinY() int {
+	min := math.MaxInt
+
+	for i := range c {
+		y := c[i][1]
+
+		if y < min {
+			min = y
+		}
+	}
+
+	return min
 }

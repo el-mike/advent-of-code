@@ -23,10 +23,11 @@ const (
 type Board struct {
 	Width int
 
-	Grid        [][]BoardCell
-	FallingRock *Rock
-	MaxY        int
-	ReachedY    int
+	Grid          [][]BoardCell
+	FallingRock   *Rock
+	MaxY          int
+	ReachedY      int
+	InitialReachY int
 }
 
 var cellSignsMap = map[BoardCell]string{
@@ -35,14 +36,29 @@ var cellSignsMap = map[BoardCell]string{
 	SettledRockCell: "#",
 }
 
-func NewBoard() *Board {
+func NewBoard(initialState [][]BoardCell) *Board {
+	var grid [][]BoardCell
+
+	// We need to start at -1, as ReachedY means concrete index,
+	// and when starting, no index has been reached yet.
+	reachedY := -1
+	initialReachedY := -1
+
+	if initialState != nil {
+		grid = initialState
+
+		// If we start with some defined levels, we want to set
+		// reachedY accordingly.
+		initialReachedY = len(initialState) - 1
+		reachedY = initialReachedY
+	}
+
 	return &Board{
-		Width: BoardWidth,
-		Grid:  [][]BoardCell{},
-		MaxY:  0,
-		// We need to start at -1, as ReachedY means concrete index,
-		// and when starting, no index has been reached yet.
-		ReachedY: -1,
+		Width:         BoardWidth,
+		Grid:          grid,
+		MaxY:          0,
+		ReachedY:      reachedY,
+		InitialReachY: initialReachedY,
 	}
 }
 
@@ -51,7 +67,7 @@ func (b *Board) AddRock(rock *Rock) {
 
 	// We need to subtract one to make MaxY an actual highest row index,
 	// not the height (length) itself.
-	b.MaxY = (b.ReachedY + numRows)
+	b.MaxY = b.ReachedY + numRows
 
 	for y := b.ReachedY; y <= b.MaxY; y += 1 {
 		b.AddRow(y)
@@ -100,16 +116,35 @@ func (b *Board) AddRow(y int) {
 	}
 }
 
-func (b *Board) Render() {
-	renderLimitY := b.MaxY - RenderHeight
+func (b *Board) GetTopRow() []BoardCell {
+	return b.Grid[b.ReachedY]
+}
 
-	if renderLimitY < 0 {
-		renderLimitY = 0
+func (b *Board) GetTopRows(numRows int) [][]BoardCell {
+	var result [][]BoardCell
+
+	delimiter := b.ReachedY - numRows
+	if delimiter < 0 {
+		delimiter = 0
+	}
+
+	for i := b.ReachedY; i >= delimiter; i -= 1 {
+		result = append(result, b.Grid[i])
+	}
+
+	return result
+}
+
+func (b *Board) Render() {
+	delimiter := b.MaxY - RenderHeight
+
+	if delimiter < 0 {
+		delimiter = 0
 	}
 
 	fmt.Printf("\n")
 
-	for y := b.MaxY; y >= renderLimitY; y -= 1 {
+	for y := b.MaxY; y >= delimiter; y -= 1 {
 		fmt.Print("|")
 
 		for _, cell := range b.Grid[y] {
