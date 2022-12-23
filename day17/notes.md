@@ -13,3 +13,6 @@
 - 200 - **1566272189346** - too low
 - 50 - **1566272189349** - too low
 - 20 - **1566272189357** - too high
+
+For some reason, the result slightly differ (+/- 10) when using different memoization options.
+This may be due to the key generation itself, or some other bug in the algorithm.
