@@ -15,16 +15,11 @@ type HelperContext struct {
 	CostsMap  CostsMap
 }
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 const TimeLimit = 26
 const StartValveName = "AA"
 
 func ProboscideaVolcanium() {
-	scanner, err := common.GetFileScanner("./day16/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day16/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

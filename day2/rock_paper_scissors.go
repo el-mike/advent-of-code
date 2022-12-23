@@ -6,11 +6,6 @@ import (
 )
 
 const (
-	INPUT_FILENAME      = "input.txt"
-	TEST_INPUT_FILENAME = "test_input.txt"
-)
-
-const (
 	ROCK = iota
 	PAPER
 	SCISSORS
@@ -66,7 +61,7 @@ func getPlayerShape(opponentShape int, desiredResult int) int {
 }
 
 func RockPaperScissors() int {
-	scanner, err := common.GetFileScanner("./day2/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day2/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

@@ -9,11 +9,6 @@ import (
 )
 
 const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
-const (
 	SearchSize = 4000000
 	Multiplier = 4000000
 )
@@ -25,7 +20,7 @@ const NumberOfBatches = 10
 func BeaconExclusionZone() {
 	start := time.Now()
 
-	scanner, err := common.GetFileScanner("./day15/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day15/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

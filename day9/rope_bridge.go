@@ -9,11 +9,6 @@ import (
 )
 
 const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
-const (
 	Up = iota
 	Down
 	Left
@@ -92,7 +87,7 @@ func getKey(tailPos []int) string {
 }
 
 func RopeBridge() int {
-	scanner, err := common.GetFileScanner("./day9/" + TestInputFilename)
+	scanner, err := common.GetFileScanner("./day9/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

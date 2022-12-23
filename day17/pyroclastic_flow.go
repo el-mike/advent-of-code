@@ -21,11 +21,6 @@ type CycleResult struct {
 }
 
 const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
-const (
 	NumRockTypes = 5
 	// A trillion.
 	NumRocks        = 1000000000000
@@ -41,7 +36,7 @@ var rockTypesMap = map[int]RockType{
 }
 
 func PyroclasticFlow() {
-	scanner, err := common.GetFileScanner("./day17/" + TestInputFilename)
+	scanner, err := common.GetFileScanner("./day17/" + common.TestInputFilename)
 	if err != nil {
 		panic(err)
 	}

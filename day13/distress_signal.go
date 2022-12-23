@@ -6,11 +6,6 @@ import (
 	"sort"
 )
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 type ComparisonResult uint8
 
 const (
@@ -20,7 +15,7 @@ const (
 )
 
 func DistressSignal() {
-	scanner, err := common.GetFileScanner("./day13/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day13/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

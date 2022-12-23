@@ -10,7 +10,7 @@ import (
 func BeaconExclusionZone2() {
 	start := time.Now()
 
-	scanner, err := common.GetFileScanner("./day15/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day15/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

@@ -5,11 +5,6 @@ import (
 )
 
 const (
-	INPUT_FILENAME      = "input.txt"
-	TEST_INPUT_FILENAME = "test_input.txt"
-)
-
-const (
 	ASCII_LOWERCASE_A           = 97
 	LOWECASE_PRIORITY_DISTANCE  = 96
 	UPPERCASE_PRIORITY_DISTANCE = 38
@@ -32,7 +27,7 @@ func getPriority(letter rune) int {
 }
 
 func RucksackReorganization() int {
-	scanner, err := common.GetFileScanner("./day3/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day3/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

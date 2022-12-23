@@ -8,13 +8,8 @@ import (
 	"strings"
 )
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 func CathodeRayTube() {
-	scanner, err := common.GetFileScanner("./day10/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day10/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +70,7 @@ func CathodeRayTube() {
 		}
 
 		if currentOperation == nil {
-			currentOperation, err := operationsQueue.Dequeue()
+			currentOperation, err = operationsQueue.Dequeue()
 			if _, ok := err.(*ds.QueueEmptyException); err != nil && !ok {
 				panic(err)
 			}

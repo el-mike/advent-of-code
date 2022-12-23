@@ -5,13 +5,8 @@ import (
 	"fmt"
 )
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 func TreetopTreeHouse() int {
-	scanner, err := common.GetFileScanner("./day8/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day8/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

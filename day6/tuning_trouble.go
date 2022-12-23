@@ -6,16 +6,11 @@ import (
 )
 
 const (
-	INPUT_FILENAME      = "input.txt"
-	TEST_INPUT_FILENAME = "test_input.txt"
-)
-
-const (
 	MARKER_SIZE = 14
 )
 
 func TuningTrouble() int {
-	scanner, err := common.GetFileScanner("./day6/" + TEST_INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day6/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

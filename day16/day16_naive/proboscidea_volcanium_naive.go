@@ -14,17 +14,12 @@ type ResultWrapper struct {
 	PathStr  string
 }
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 const TimeLimit = 30
 
 func ProboscideaVolcanium() {
 	start := time.Now()
 
-	scanner, err := common.GetFileScanner("./day16/" + TestInputFilename)
+	scanner, err := common.GetFileScanner("./day16/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

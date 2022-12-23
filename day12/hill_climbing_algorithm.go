@@ -6,13 +6,8 @@ import (
 	"fmt"
 )
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 func HillClimbingAlgorithm() {
-	scanner, err := common.GetFileScanner("./day12/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day12/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

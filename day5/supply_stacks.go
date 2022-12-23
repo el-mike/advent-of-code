@@ -9,11 +9,6 @@ import (
 )
 
 const (
-	INPUT_FILENAME      = "input.txt"
-	TEST_INPUT_FILENAME = "test_input.txt"
-)
-
-const (
 	COLUMN_SIZE = 4
 )
 
@@ -62,7 +57,7 @@ func parseInitialState(initialState *ds.Stack[string], numColumns int) []*ds.Sta
 }
 
 func SupplyStacks() string {
-	scanner, err := common.GetFileScanner("./day5/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day5/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

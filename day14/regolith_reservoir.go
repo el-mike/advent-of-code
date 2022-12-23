@@ -7,17 +7,12 @@ import (
 	"time"
 )
 
-const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
 const PointDelimiter = " -> "
 
 const RenderSimulation = false
 
 func RegolithReservoir() {
-	scanner, err := common.GetFileScanner("./day14/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day14/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

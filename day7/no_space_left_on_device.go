@@ -6,18 +6,13 @@ import (
 )
 
 const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
-const (
 	MaxSize       = 100000
 	TotalSpace    = 70000000
 	RequiredSpace = 30000000
 )
 
 func NoSpaceLeftOnDevice() int {
-	scanner, err := common.GetFileScanner("./day7/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day7/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

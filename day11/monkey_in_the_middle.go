@@ -8,11 +8,6 @@ import (
 )
 
 const (
-	InputFilename     = "input.txt"
-	TestInputFilename = "test_input.txt"
-)
-
-const (
 	NumRounds = 10000
 )
 
@@ -34,7 +29,7 @@ func parseOperation(line string) []string {
 }
 
 func MonkeyInTheMiddle() {
-	scanner, err := common.GetFileScanner("./day11/" + InputFilename)
+	scanner, err := common.GetFileScanner("./day11/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}

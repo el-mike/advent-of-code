@@ -5,13 +5,8 @@ import (
 	"strings"
 )
 
-const (
-	INPUT_FILENAME      = "input.txt"
-	TEST_INPUT_FILENAME = "test_input.txt"
-)
-
 func CampCleanup() int {
-	scanner, err := common.GetFileScanner("./day4/" + INPUT_FILENAME)
+	scanner, err := common.GetFileScanner("./day4/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}
