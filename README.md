@@ -5,7 +5,14 @@
 
 ---
 
-## Day 16
+## Day 17
 
 - Part one: **~10ms**
 - Part two: **~463ms**
+
+---
+
+## Day 18
+
+- Part one: **~215ms**
+- Part two: **~0ms**
