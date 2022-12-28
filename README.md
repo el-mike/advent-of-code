@@ -15,4 +15,4 @@
 ## Day 18
 
 - Part one: **~215ms**
-- Part two: **~0ms**
+- Part two: **~6ms**

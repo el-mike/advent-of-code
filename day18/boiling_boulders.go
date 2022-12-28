@@ -69,50 +69,13 @@ func BoilingBoulders() {
 		matrixModel.Matrix[x][y][z] = LavaCell
 	}
 
-	//matrix := matrixModel.Matrix
-	//
-	//totalSurface := 0
-	//
-	//for x := 0; x < matrixSize; x += 1 {
-	//	for y := 0; y < matrixSize; y += 1 {
-	//		for z := 0; z < matrixSize; z += 1 {
-	//			if matrix[x][y][z] == LavaCell {
-	//				surface := 6
-	//
-	//				x1, x2 := x-1, x+1
-	//				y1, y2 := y-1, y+1
-	//				z1, z2 := z-1, z+1
-	//
-	//				if x1 >= 0 && matrix[x1][y][z] == LavaCell {
-	//					surface -= 1
-	//				}
-	//				if x2 < matrixSize && matrix[x2][y][z] == LavaCell {
-	//					surface -= 1
-	//				}
-	//				if y1 >= 0 && matrix[x][y1][z] == LavaCell {
-	//					surface -= 1
-	//				}
-	//				if y2 < matrixSize && matrix[x][y2][z] == LavaCell {
-	//					surface -= 1
-	//				}
-	//				if z1 >= 0 && matrix[x][y][z1] == LavaCell {
-	//					surface -= 1
-	//				}
-	//				if z2 < matrixSize && matrix[x][y][z2] == LavaCell {
-	//					surface -= 1
-	//				}
-	//
-	//				totalSurface += surface
-	//			}
-	//		}
-	//	}
-	//}
-
 	externalSurfaceArea := FindExteriorSurfaceArea(matrixModel)
 
 	fmt.Println(externalSurfaceArea)
 }
 
+// FindExteriorSurfaceArea - 3D Breadth-first search algorithm. It checks every Empty cell
+// in the matrix, and adds 1 to totalSurface if it detecs a LavaCell neighbor.
 func FindExteriorSurfaceArea(matrixModel *MatrixModel) int {
 	totalSurface := 0
 
@@ -143,12 +106,3 @@ func FindExteriorSurfaceArea(matrixModel *MatrixModel) int {
 
 	return totalSurface
 }
-
-// 2,2,2
-
-//1,2,2
-//3,2,2
-//2,1,2
-//2,3,2
-//2,2,1
-//2,2,3
