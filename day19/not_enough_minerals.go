@@ -9,7 +9,7 @@ import (
 const TimeLimit = 32
 
 func NotEnoughMinerals() {
-	scanner, err := common.GetFileScanner("./day19/" + common.TestInputFilename)
+	scanner, err := common.GetFileScanner("./day19/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}
@@ -37,31 +37,24 @@ func NotEnoughMinerals() {
 		))
 	}
 
-	geodesMap := map[int]int{}
 	wg := sync.WaitGroup{}
+	result := 1
 
-	for _, blueprint := range blueprints {
+	for _, blueprint := range blueprints[:3] {
 		wg.Add(1)
 
 		go func(blueprint *Blueprint) {
 			startState := NewSimulationState(blueprint)
 
-			geodes := step(blueprint, startState, TimeLimit)
-			geodesMap[blueprint.ID] = geodes
+			result *= step(blueprint, startState, TimeLimit)
 
 			wg.Done()
 		}(blueprint)
 	}
 
 	wg.Wait()
-
-	totalQuality := 1
-
-	for _, quality := range geodesMap {
-		totalQuality *= quality
-	}
-
-	fmt.Println(totalQuality)
+	
+	fmt.Println(result)
 }
 
 func step(
@@ -82,17 +75,21 @@ func step(
 		// for ore for one minute - any excessive ore would be wasted at this point.
 		// This is one of the heuristics that strongly limits the search space.
 		state.OreRobots <= blueprint.OreCostForAllRobots() &&
-		state.Ore <= 2*blueprint.OreRobotCost {
+		// If there is a lot of ore and nothing is being built, we don't want to pursue given path.
+		state.Ore <= 2*blueprint.OreRobotCost &&
+		// If there is only 10 minutes left we should already by collecting enough ore.
+		timeLeft > 10 {
 		newState := state.Clone()
 
 		// Order is important here! If we update materials after building a robot,
 		// new robot would also be included in addition, even though we've just built it.
+		// Also, we cannot update materials before testing if given robot can be built, as it would
+		// allow to build robots too early (even if given round ends up with enough material,
+		// robots are always built BEFORE collecting minerals, not after).
 		newState.UpdateMaterials()
 		newState.BuildOreRobot()
 
-		geodes := step(blueprint, newState, timeLeft)
-
-		if geodes > maxGeodes {
+		if geodes := step(blueprint, newState, timeLeft); geodes > maxGeodes {
 			maxGeodes = geodes
 		}
 	}
@@ -101,15 +98,14 @@ func step(
 		// As above, we only build clay robots when we have less robots
 		// than single obsidian robot needs.
 		state.ClayRobots <= blueprint.ObsidianRobotCost[1] &&
-		state.Ore <= 2*blueprint.ClayRobotCost {
+		state.Ore <= 2*blueprint.ClayRobotCost &&
+		timeLeft > 10 {
 		newState := state.Clone()
 
 		newState.UpdateMaterials()
 		newState.BuildClayRobot()
 
-		geodes := step(blueprint, newState, timeLeft)
-
-		if geodes > maxGeodes {
+		if geodes := step(blueprint, newState, timeLeft); geodes > maxGeodes {
 			maxGeodes = geodes
 		}
 	}
@@ -123,9 +119,7 @@ func step(
 		newState.UpdateMaterials()
 		newState.BuildObsidianRobot()
 
-		geodes := step(blueprint, newState, timeLeft)
-
-		if geodes > maxGeodes {
+		if geodes := step(blueprint, newState, timeLeft); geodes > maxGeodes {
 			maxGeodes = geodes
 		}
 	}
@@ -136,20 +130,23 @@ func step(
 		newState.UpdateMaterials()
 		newState.BuildGeodeRobot()
 
-		geodes := step(blueprint, newState, timeLeft)
-
-		if geodes > maxGeodes {
+		if geodes := step(blueprint, newState, timeLeft); geodes > maxGeodes {
 			maxGeodes = geodes
 		}
 	}
 
 	state.UpdateMaterials()
 
-	// A branch in which no robot is built.
-	geodes := step(blueprint, state.Clone(), timeLeft)
-
-	if geodes > maxGeodes {
-		maxGeodes = geodes
+	// A branch in which no robot is built. We only want to pursuit this branch if we can't
+	// build some robot now, but we could in the future. Otherwise, it's just a waste of time.
+	// This makes a huge difference in terms of time complexity.
+	if !state.CanBuildOreRobot() ||
+		!state.CanBuildClayRobot() ||
+		!state.CanBuildObsidianRobot() ||
+		!state.CanBuildGeodeRobot() {
+		if geodes := step(blueprint, state, timeLeft); geodes > maxGeodes {
+			maxGeodes = geodes
+		}
 	}
 
 	return maxGeodes
