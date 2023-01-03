@@ -10,7 +10,14 @@ import (
 
 type MonkeysMap map[string]*Monkey
 
-const RootMonkeyName = "root"
+const (
+	RootMonkeyName = "root"
+	MyMonkeyName   = "humn"
+)
+
+// Arbitrary values to start from. Its size is based on empirical testing.
+const StartTestValue = 10000
+const StartFactor = 12
 
 func parseLine(line string) *Monkey {
 	parts := strings.Split(line, ":")
@@ -47,7 +54,8 @@ func MonkeyMath() {
 		panic(err)
 	}
 
-	monkeysMap := MonkeysMap{}
+	originalMonkeysMap := MonkeysMap{}
+	currentMonkeysMap := MonkeysMap{}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -58,33 +66,76 @@ func MonkeyMath() {
 
 		monkey := parseLine(line)
 
-		monkeysMap[monkey.Name] = monkey
+		originalMonkeysMap[monkey.Name] = monkey
+		currentMonkeysMap[monkey.Name] = monkey.Clone()
 	}
 
-	result := getNumber(monkeysMap, monkeysMap[RootMonkeyName])
+	rootMonkey := originalMonkeysMap[RootMonkeyName]
+	testValue := StartTestValue
 
-	fmt.Println(result)
+	var left, right, lastGreater int
+	currentFactor := StartFactor
+
+	for {
+		// @TODO:
+		// Unfortunately, because of some precision error, there are more than one
+		// testValue that makes the test pass. We can find the lowest one by picking the found
+		// value and changing it to find the correct answer, but the precision error should be fixed,
+		// to avoid this manual work.
+		testValue += int(math.Pow(10, float64(currentFactor)))
+		leftMonkey, rightMonkey := currentMonkeysMap[rootMonkey.LeftMonkey], currentMonkeysMap[rootMonkey.RightMonkey]
+
+		left = getNumber(currentMonkeysMap, leftMonkey, testValue)
+		right = getNumber(currentMonkeysMap, rightMonkey, testValue)
+
+		if left == right {
+			break
+		}
+
+		diff := left - right
+
+		// Based on testing, the left value is converging to right value
+		// when testValue goes up.
+		if diff > 0 {
+			lastGreater = testValue
+		} else {
+			if currentFactor > 0 {
+				currentFactor -= 1
+			}
+
+			if lastGreater > 0 {
+				testValue = lastGreater
+			}
+		}
+
+		resetMap(originalMonkeysMap, currentMonkeysMap)
+	}
+
+	fmt.Println(testValue)
 }
 
 func getNumber(
 	monkeysMap MonkeysMap,
 	monkey *Monkey,
+	testValue int,
 ) int {
+	if monkey.Name == MyMonkeyName {
+		return testValue
+	}
 	if monkey.HasNumber() {
 		return monkey.Number
 	}
 
-	leftMonkey, rightMonkey := monkeysMap[monkey.LeftMonkey], monkeysMap[monkey.RightMonkey]
+	left := getNumber(monkeysMap, monkeysMap[monkey.LeftMonkey], testValue)
+	right := getNumber(monkeysMap, monkeysMap[monkey.RightMonkey], testValue)
 
-	if !leftMonkey.HasNumber() {
-		leftMonkey.Number = getNumber(monkeysMap, leftMonkey)
-	}
-
-	if !rightMonkey.HasNumber() {
-		rightMonkey.Number = getNumber(monkeysMap, rightMonkey)
-	}
-
-	monkey.Number = monkey.OperationFn(leftMonkey.Number, rightMonkey.Number)
+	monkey.Number = monkey.OperationFn(left, right)
 
 	return monkey.Number
+}
+
+func resetMap(original, current MonkeysMap) {
+	for key, monkey := range original {
+		current[key].Number = monkey.Number
+	}
 }

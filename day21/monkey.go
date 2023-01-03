@@ -51,3 +51,13 @@ func NewMonkey(
 func (m *Monkey) HasNumber() bool {
 	return m.Number != math.MaxInt
 }
+
+func (m *Monkey) Clone() *Monkey {
+	return &Monkey{
+		Name:        m.Name,
+		Number:      m.Number,
+		LeftMonkey:  m.LeftMonkey,
+		RightMonkey: m.RightMonkey,
+		OperationFn: m.OperationFn,
+	}
+}

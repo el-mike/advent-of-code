@@ -28,3 +28,12 @@ An exercise in depth first search with heuristics to limit the search space.
 
 - Part one: **1s 40ms**
 - Part two: **15s 736ms**
+
+## Day 21
+
+An exercise in depth first search and recurive techniques, with some heuristics for the
+part two.
+It's a regression problem, so it could be solved with regression techniques as well.
+
+- Part one: **36ms**
+- Part two: **48ms**
