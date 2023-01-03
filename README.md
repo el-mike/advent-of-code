@@ -27,4 +27,4 @@ An exercise in depth first search with heuristics to limit the search space.
 ## Day 20
 
 - Part one: **1s 40ms**
-- Part two: **XXms**
+- Part two: **15s 736ms**
