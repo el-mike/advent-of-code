@@ -2,11 +2,11 @@ package main
 
 import (
 	"el-mike/advent-of-code/common"
-	"el-mike/advent-of-code/day19"
+	"el-mike/advent-of-code/day20"
 )
 
 func main() {
 	runner := common.NewRunner()
 
-	runner.RunAndMeasure(day19.NotEnoughMinerals)
+	runner.RunAndMeasure(day20.GrovePositioningSystem)
 }

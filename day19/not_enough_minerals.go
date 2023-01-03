@@ -53,7 +53,7 @@ func NotEnoughMinerals() {
 	}
 
 	wg.Wait()
-	
+
 	fmt.Println(result)
 }
 

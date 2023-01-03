@@ -34,3 +34,18 @@ func Filter[T comparable](slice []T, predictor func(x T) bool) []T {
 
 	return result
 }
+
+func RemoveAt[T comparable](slice []T, index int) []T {
+	return append(slice[:index], slice[index+1:]...)
+}
+
+func InsertAt[T comparable](slice []T, value T, index int) []T {
+	return append(slice[:index], append([]T{value}, slice[index:]...)...)
+}
+
+func Move[T comparable](slice []T, srcIndex, dstIndex int) []T {
+	// We need to extract the value before we call RemoveAt.
+	value := slice[srcIndex]
+
+	return InsertAt[T](RemoveAt(slice, srcIndex), value, dstIndex)
+}

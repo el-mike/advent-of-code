@@ -23,3 +23,7 @@ An exercise in depth first search with heuristics to limit the search space.
 
 - Part one: **1m 44s** (on multiple threads)
 - Part two: **~41s** (on multiple threads)
+
+## Day 20
+
+- Part one: ****
