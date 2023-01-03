@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+const DecryptionKey = 811589153
+
 func GrovePositioningSystem() {
 	scanner, err := common.GetFileScanner("./day20/" + common.InputFilename)
 	if err != nil {
@@ -27,7 +29,7 @@ func GrovePositioningSystem() {
 			panic(err)
 		}
 
-		number := numbers[0]
+		number := numbers[0] * DecryptionKey
 
 		origin = append(origin, number)
 		mixed = append(mixed, number)
@@ -38,54 +40,51 @@ func GrovePositioningSystem() {
 
 	length := len(origin)
 
-	for i, value := range origin {
-		if value == 0 {
-			continue
-		}
-
-		source := positionMap[i]
-
-		var dest int
-
-		nextPosition := source + value
-
-		if value < 0 {
-			nextPosition -= 1
-		}
-
-		if nextPosition >= 0 {
-			dest = nextPosition % (length - 1)
-		} else {
-			// We need to use addition instead of subtraction, as result of
-			// module will be negative as well.
-			dest = length + (nextPosition % (length - 1))
-		}
-
-		if dest == length {
-			dest = 0
-		}
-
-		common.Move[int](mixed, source, dest)
-
-		var start, end int
-
-		if dest > source {
-			start, end = (source + 1), dest
-		} else {
-			start, end = dest, (source - 1)
-		}
-
-		indexesToUpdate := getIndexesToUpdate(positionMap, start, end)
-
-		for _, index := range indexesToUpdate {
-			if dest > source {
-				positionMap[index] -= 1
-			} else {
-				positionMap[index] += 1
+	for k := 0; k < 10; k++ {
+		for i, value := range origin {
+			if value == 0 {
+				continue
 			}
-		}
 
-		positionMap[i] = dest
+			source := positionMap[i]
+
+			var dest int
+
+			nextPosition := source + value
+
+			if nextPosition >= 0 {
+				dest = nextPosition % (length - 1)
+			} else {
+				// We need to use addition instead of subtraction, as result of
+				// module will be negative as well.
+				// Also, we need to subtract one, as when crossing left boundary,
+				// we want to push value before last element, not after (because last and first
+				// index is virtually the same when list is circular).
+				dest = length + (nextPosition % (length - 1)) - 1
+			}
+
+			common.Move[int](mixed, source, dest)
+
+			var start, end int
+
+			if dest > source {
+				start, end = (source + 1), dest
+			} else {
+				start, end = dest, (source - 1)
+			}
+
+			indexesToUpdate := getIndexesToUpdate(positionMap, start, end)
+
+			for _, index := range indexesToUpdate {
+				if dest > source {
+					positionMap[index] -= 1
+				} else {
+					positionMap[index] += 1
+				}
+			}
+
+			positionMap[i] = dest
+		}
 	}
 
 	var zeroIndex int
