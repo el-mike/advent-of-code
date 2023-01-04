@@ -37,3 +37,8 @@ It's a regression problem, so it could be solved with regression techniques as w
 
 - Part one: **36ms**
 - Part two: **48ms**
+
+## Day 22
+
+- Part one: **2ms**
+- Part two: **XXms**
