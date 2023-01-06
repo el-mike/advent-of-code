@@ -5,6 +5,10 @@ import (
 	"fmt"
 )
 
+const FaceSize = 50
+
+//const FaceSize = 4
+
 func MonkeyMap() {
 	scanner, err := common.GetFileScanner("./day22/" + common.InputFilename)
 	if err != nil {
@@ -38,7 +42,7 @@ func MonkeyMap() {
 		}
 	}
 
-	gridModel := NewGridModel()
+	gridModel := NewGridModel(FaceSize)
 	instructions := NewInstructions(movesStr)
 
 	gridModel.Build(lines, maxRow)
@@ -52,15 +56,21 @@ func MonkeyMap() {
 		}
 	}
 
+	//currentCoord = Coord{currentCoord[0] + 1, 0}
+
 	steps := []Coord{currentCoord}
 
 	currentDirection := DirectionRight
+	//currentDirection := DirectionUp
 
 	for i := 0; i < len(instructions.Numbers); i++ {
 		n := instructions.Numbers[i]
 
 		for j := 0; j < n; j++ {
 			var nextCoord Coord
+			// We could use any value bigger than 3, as there are only
+			// 4 directions indexed from 0 to 3, so 4 is the first non-existing direction.
+			nextDirection := Direction(4)
 
 			switch currentDirection {
 			case DirectionLeft:
@@ -85,31 +95,10 @@ func MonkeyMap() {
 
 			// This condition takes care of wrapping.
 			if nextCell == VoidCell {
-				if currentDirection.IsHorizontal() {
-					left, right := gridModel.GetRowEdgeCells(currentCoord[1])
+				nextCoord, nextDirection = gridModel.GetWrapped(currentCoord, currentDirection)
 
-					if currentDirection == DirectionRight {
-						nextCoord = left
-					} else {
-						nextCoord = right
-					}
-
-					nextX, nextY = nextCoord[0], nextCoord[1]
-					nextCell = gridModel.Grid[nextY][nextX]
-				}
-
-				if currentDirection.IsVertical() {
-					top, bottom := gridModel.GetColEdgeCells(currentCoord[0])
-
-					if currentDirection == DirectionDown {
-						nextCoord = top
-					} else {
-						nextCoord = bottom
-					}
-
-					nextX, nextY = nextCoord[0], nextCoord[1]
-					nextCell = gridModel.Grid[nextY][nextX]
-				}
+				nextX, nextY = nextCoord[0], nextCoord[1]
+				nextCell = gridModel.Grid[nextY][nextX]
 			}
 
 			if nextCell == OpenCell {
@@ -119,6 +108,12 @@ func MonkeyMap() {
 
 			if nextCell == WallCell {
 				break
+			}
+
+			// If new nextDirection was returned by GetWrapper and
+			// next cell is not a WallCell, replace current direction.
+			if nextDirection != 4 {
+				currentDirection = nextDirection
 			}
 
 			//gridModel.Render(steps)
@@ -131,7 +126,6 @@ func MonkeyMap() {
 	}
 
 	row, col := currentCoord[1]+1, currentCoord[0]+1
-
 	result := 1000*row + 4*col + int(currentDirection)
 
 	fmt.Println(result)

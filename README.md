@@ -40,5 +40,7 @@ It's a regression problem, so it could be solved with regression techniques as w
 
 ## Day 22
 
+An exercise in geometry and analysis input.
+
 - Part one: **2ms**
-- Part two: **XXms**
+- Part two: **1.6ms**
