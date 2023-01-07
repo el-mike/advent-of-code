@@ -47,7 +47,5 @@ An exercise in geometry and analysis input.
 
 ## Day 23
 
-Incorrect: 4278
-
-- Part one: **XXms**
-- Part two: **XXms**
+- Part one: **152ms**
+- Part two: **14s**

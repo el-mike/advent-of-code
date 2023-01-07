@@ -6,8 +6,6 @@ import (
 	"fmt"
 )
 
-const NumRounds = 10
-
 func UnstableDiffustion() {
 	scanner, err := common.GetFileScanner("./day23/" + common.InputFilename)
 	if err != nil {
@@ -36,9 +34,9 @@ func UnstableDiffustion() {
 	directionsQueue.Enqueue(DirectionW)
 	directionsQueue.Enqueue(DirectionE)
 
-	//gridModel.Render()
+	round := 1
 
-	for i := 0; i < NumRounds; i++ {
+	for ; ; round++ {
 		propositionsMap := map[string][]Coord{}
 		directions := getDirectionsAndRequeue(directionsQueue)
 
@@ -67,6 +65,10 @@ func UnstableDiffustion() {
 			}
 		}
 
+		if len(propositionsMap) == 0 {
+			break
+		}
+
 		padTop, padRight, padBottom, padLeft := false, false, false, false
 
 		for key, propositions := range propositionsMap {
@@ -86,13 +88,9 @@ func UnstableDiffustion() {
 		}
 
 		gridModel.PadIfExtends(padTop, padRight, padBottom, padLeft)
-
-		//gridModel.Render()
-		//fmt.Println()
 	}
 
-	result := (gridModel.Width * gridModel.Height) - len(gridModel.ElfPositions)
-	fmt.Println(result)
+	fmt.Println(round)
 }
 
 func getDirectionsAndRequeue(queue *ds.Queue[Direction]) []Direction {
