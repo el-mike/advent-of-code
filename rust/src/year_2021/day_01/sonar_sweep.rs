@@ -6,9 +6,8 @@ use crate::common::file_utils::get_file_reader;
 const WINDOW_SIZE: usize = 3;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("01", false).unwrap_or_else(|err| {
-        panic!("{}", err);
-    });
+    let reader = get_file_reader("01", false)
+        .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut count: i32 = 0;
 
@@ -28,9 +27,9 @@ pub fn run() -> Result<(), Box<dyn Error>> {
             Err(err) => panic!("reading file failed, {}", err),
         };
 
-        let current_value = line.parse::<i32>().unwrap_or_else(|err| {
-            panic!("{}", err);
-        });
+        let current_value = line
+            .parse::<i32>()
+            .unwrap_or_else(|err| { panic!("{}", err) });
 
         let prev_measurement = measurements[prev_index];
 
