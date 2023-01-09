@@ -12,7 +12,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
 
     let mut count: i32 = 0;
 
-    let mut measurements = vec![0, 0, 0];
+    let mut measurements: [i32; 3] = [0, 0, 0];
 
     let mut prev_index: usize = 0;
     let mut curr_index: usize = 1;
