@@ -40,7 +40,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         measurements[1] += if i > 0 { current_value } else { 0 };
         measurements[2] += if i > 1 { current_value } else { 0 };
 
-        if i >= WINDOW_SIZE.try_into().unwrap() {
+        if i >= WINDOW_SIZE as i32 {
             if measurements[curr_index] > prev_measurement {
                 count += 1;
             }
