@@ -11,12 +11,26 @@ func BlizzardBasin() {
 		panic(err)
 	}
 
+	var lines []string
+
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		if line == "" {
 			continue
 		}
+
+		lines = append(lines, line)
+	}
+
+	gridModel := NewGridModel()
+	gridModel.Build(lines)
+
+	currentPosition := gridModel.Start
+
+	for {
+		gridModel.Render(currentPosition)
+		gridModel.MoveBlizzards()
 	}
 
 	fmt.Println()
