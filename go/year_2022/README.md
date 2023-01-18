@@ -49,3 +49,10 @@ An exercise in geometry and analysis input.
 
 - Part one: **152ms**
 - Part two: **14s**
+
+## Day 24
+
+An exercise in pathfinding and optimizing search space (blizzard positions period).
+
+- Part one: **XXms**
+- Part two: **XXms**

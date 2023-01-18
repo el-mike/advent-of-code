@@ -2,11 +2,17 @@ package day_24
 
 import (
 	"el-mike/advent-of-code/go/common"
+	"el-mike/advent-of-code/go/common/ds"
 	"fmt"
 )
 
+type StepInfo struct {
+	Minute   int
+	Position Vector
+}
+
 func BlizzardBasin() {
-	scanner, err := common.GetFileScanner("./year_2022/day_24/" + common.TestInputFilename)
+	scanner, err := common.GetFileScanner("./year_2022/day_24/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}
@@ -26,12 +32,52 @@ func BlizzardBasin() {
 	gridModel := NewGridModel()
 	gridModel.Build(lines)
 
-	currentPosition := gridModel.Start
+	period := common.LCM(gridModel.Width-2, gridModel.Height-2)
 
-	for {
-		gridModel.Render(currentPosition)
+	blizzardStates := map[int]BlizzardPositions{}
+
+	for i := 0; i < period; i++ {
+		blizzardStates[i] = gridModel.BlizzardPositions
 		gridModel.MoveBlizzards()
 	}
 
-	fmt.Println()
+	frontier := ds.NewQueue[*StepInfo]()
+	visited := map[string]*StepInfo{}
+
+	frontier.Enqueue(&StepInfo{Minute: 0, Position: gridModel.Start})
+
+	var lastStep *StepInfo
+
+	for !frontier.IsEmpty() {
+		current, err := frontier.Dequeue()
+		if err != nil {
+			panic(err)
+		}
+
+		visited[current.Position.ID()] = current
+
+		if gridModel.IsEnd(current.Position) {
+			lastStep = current
+			break
+		}
+
+		nextMinute := current.Minute + 1
+		gridModel.BlizzardPositions = blizzardStates[nextMinute%period]
+
+		// We add current.Position as a "wait" step.
+		candidates := append(current.Position.GetNeighbors(), current.Position)
+
+		for _, candidate := range candidates {
+			if !gridModel.IsInBounds(candidate) ||
+				gridModel.IsWall(candidate) ||
+				gridModel.hasBlizzard(candidate) {
+				continue
+			}
+
+			frontier.Enqueue(&StepInfo{Minute: nextMinute, Position: candidate})
+		}
+
+	}
+
+	fmt.Println(lastStep.Minute)
 }

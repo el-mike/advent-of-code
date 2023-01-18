@@ -35,8 +35,8 @@ type GridModel struct {
 	BlizzardPositions BlizzardPositions
 	Width             int
 	Height            int
-	Start             Coord
-	End               Coord
+	Start             Vector
+	End               Vector
 }
 
 func NewGridModel() *GridModel {
@@ -57,12 +57,12 @@ func (gm *GridModel) Build(lines []string) {
 
 			// Get start coord.
 			if y == 0 && r == OpenCellChar {
-				gm.Start = NewCoord(x, y)
+				gm.Start = NewVector(x, y)
 			}
 
 			// Get end coord.
 			if y == (gm.Height-1) && r == OpenCellChar {
-				gm.End = NewCoord(x, y)
+				gm.End = NewVector(x, y)
 			}
 
 			if r != OpenCellChar && r != WallCellChar {
@@ -76,10 +76,9 @@ func (gm *GridModel) MoveBlizzards() {
 	newPositions := BlizzardPositions{}
 
 	for y, row := range gm.BlizzardPositions {
-
 		for x, blizzards := range row {
 			for _, blizzard := range blizzards {
-				current := NewCoord(x, y)
+				current := NewVector(x, y)
 				next := gm.GetNextBlizzard(current, blizzard)
 
 				nextX, nextY := next.X, next.Y
@@ -96,65 +95,69 @@ func (gm *GridModel) MoveBlizzards() {
 	gm.BlizzardPositions = newPositions
 }
 
-func (gm *GridModel) GetNextBlizzard(coord Coord, direction Direction) Coord {
+func (gm *GridModel) GetNextBlizzard(vector Vector, direction Direction) Vector {
 	if direction == DirectionRight {
-		if coord.X == gm.Width-2 {
-			return NewCoord(1, coord.Y)
+		if vector.X == gm.Width-2 {
+			return NewVector(1, vector.Y)
 		}
 
-		return coord.GetRight()
+		return vector.GetRight()
 	}
 
 	if direction == DirectionLeft {
-		if coord.X == 1 {
-			return NewCoord(gm.Width-2, coord.Y)
+		if vector.X == 1 {
+			return NewVector(gm.Width-2, vector.Y)
 		}
 
-		return coord.GetLeft()
+		return vector.GetLeft()
 	}
 
 	if direction == DirectionUp {
-		if coord.Y == 1 {
-			return NewCoord(coord.X, gm.Height-2)
+		if vector.Y == 1 {
+			return NewVector(vector.X, gm.Height-2)
 		}
 
-		return coord.GetUp()
+		return vector.GetUp()
 	}
 
 	if direction == DirectionDown {
-		if coord.Y == gm.Height-2 {
-			return NewCoord(coord.X, 1)
+		if vector.Y == gm.Height-2 {
+			return NewVector(vector.X, 1)
 		}
 
-		return coord.GetDown()
+		return vector.GetDown()
 	}
 
-	return coord
+	return vector
 }
 
-func (gm *GridModel) IsStart(coord Coord) bool {
-	return coord.Same(gm.Start)
+func (gm *GridModel) IsStart(vector Vector) bool {
+	return vector.Same(gm.Start)
 }
 
-func (gm *GridModel) IsEnd(coord Coord) bool {
-	return coord.Same(gm.End)
+func (gm *GridModel) IsEnd(vector Vector) bool {
+	return vector.Same(gm.End)
 }
 
-func (gm *GridModel) IsOpen(coord Coord) bool {
-	return !gm.IsWall(coord) && !gm.hasBlizzard(coord)
+func (gm *GridModel) IsOpen(vector Vector) bool {
+	return !gm.IsWall(vector) && !gm.hasBlizzard(vector)
 }
 
-func (gm *GridModel) IsWall(coord Coord) bool {
-	if gm.IsStart(coord) || gm.IsEnd(coord) {
+func (gm *GridModel) IsWall(vector Vector) bool {
+	if gm.IsStart(vector) || gm.IsEnd(vector) {
 		return false
 	}
 
-	x, y := coord.X, coord.Y
+	x, y := vector.X, vector.Y
 
 	return (x == 0) || (x == gm.Width-1) || (y == 0) || (y == gm.Height-1)
 }
 
-func (gm *GridModel) hasBlizzard(coord Coord) bool {
+func (gm *GridModel) IsInBounds(vector Vector) bool {
+	return vector.X >= 0 && vector.X < gm.Width && vector.Y >= 0 && vector.Y < gm.Height
+}
+
+func (gm *GridModel) hasBlizzard(coord Vector) bool {
 	x, y := coord.X, coord.Y
 
 	if gm.IsWall(coord) {
@@ -170,12 +173,12 @@ func (gm *GridModel) hasBlizzard(coord Coord) bool {
 	}
 }
 
-func (gm *GridModel) Render(expeditionPosition Coord) {
+func (gm *GridModel) Render(expeditionPosition Vector) {
 	common.ClearTerminal()
 
 	for y := 0; y < gm.Height; y++ {
 		for x := 0; x < gm.Width; x++ {
-			coord := NewCoord(x, y)
+			coord := NewVector(x, y)
 
 			if gm.hasBlizzard(coord) {
 				blizzards := gm.BlizzardPositions[y][x]
