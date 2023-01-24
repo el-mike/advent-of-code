@@ -48,6 +48,7 @@ func BlizzardBasin() {
 
 	var lastStep *StepInfo
 
+Outer:
 	for !frontier.IsEmpty() {
 		current, err := frontier.Dequeue()
 		if err != nil {
@@ -56,11 +57,6 @@ func BlizzardBasin() {
 
 		visited[current.Position.ID()] = current
 
-		if gridModel.IsEnd(current.Position) {
-			lastStep = current
-			break
-		}
-
 		nextMinute := current.Minute + 1
 		gridModel.BlizzardPositions = blizzardStates[nextMinute%period]
 
@@ -68,13 +64,20 @@ func BlizzardBasin() {
 		candidates := append(current.Position.GetNeighbors(), current.Position)
 
 		for _, candidate := range candidates {
+			candidateStep := &StepInfo{Minute: nextMinute, Position: candidate}
+
+			if gridModel.IsEnd(candidate) {
+				lastStep = candidateStep
+				break Outer
+			}
+
 			if !gridModel.IsInBounds(candidate) ||
 				gridModel.IsWall(candidate) ||
 				gridModel.hasBlizzard(candidate) {
 				continue
 			}
 
-			frontier.Enqueue(&StepInfo{Minute: nextMinute, Position: candidate})
+			frontier.Enqueue(candidateStep)
 		}
 
 	}
