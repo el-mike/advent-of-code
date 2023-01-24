@@ -55,4 +55,4 @@ An exercise in geometry and analysis input.
 An exercise in pathfinding and optimizing search space (blizzard positions period).
 
 - Part one: **1.01s**
-- Part two: **XXms**
+- Part two: **1.75s**

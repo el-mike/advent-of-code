@@ -6,14 +6,7 @@ import (
 	"fmt"
 )
 
-type StepInfo struct {
-	Minute   int
-	Position Vector
-}
-
-func (si *StepInfo) ID() string {
-	return fmt.Sprintf("%d|%s", si.Minute, si.Position.ID())
-}
+type BlizzardStates map[int]BlizzardPositions
 
 func BlizzardBasin() {
 	scanner, err := common.GetFileScanner("./year_2022/day_24/" + common.InputFilename)
@@ -38,17 +31,34 @@ func BlizzardBasin() {
 
 	period := common.LCM(gridModel.Width-2, gridModel.Height-2)
 
-	blizzardStates := map[int]BlizzardPositions{}
+	blizzardStates := BlizzardStates{}
 
 	for i := 0; i < period; i++ {
 		blizzardStates[i] = gridModel.BlizzardPositions
 		gridModel.MoveBlizzards()
 	}
 
+	start, end := gridModel.Start, gridModel.End
+
+	minute := calculatePath(gridModel, blizzardStates, period, 0, start, end)
+	minute = calculatePath(gridModel, blizzardStates, period, minute, end, start)
+	minute = calculatePath(gridModel, blizzardStates, period, minute, start, end)
+
+	fmt.Println(minute)
+}
+
+func calculatePath(
+	gridModel *GridModel,
+	blizzardStates BlizzardStates,
+	period,
+	startMinute int,
+	start,
+	end Vector,
+) int {
 	frontier := ds.NewQueue[*StepInfo]()
 	visited := map[string]*StepInfo{}
 
-	frontier.Enqueue(&StepInfo{Minute: 0, Position: gridModel.Start})
+	frontier.Enqueue(&StepInfo{Minute: startMinute, Position: start})
 
 	var lastStep *StepInfo
 
@@ -58,7 +68,7 @@ func BlizzardBasin() {
 			panic(err)
 		}
 
-		if gridModel.IsEnd(current.Position) {
+		if current.Position.Same(end) {
 			lastStep = current
 			break
 		}
@@ -87,8 +97,7 @@ func BlizzardBasin() {
 
 			frontier.Enqueue(&StepInfo{Minute: nextMinute, Position: candidate})
 		}
-
 	}
 
-	fmt.Println(lastStep.Minute)
+	return lastStep.Minute
 }
