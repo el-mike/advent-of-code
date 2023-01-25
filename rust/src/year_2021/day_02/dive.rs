@@ -6,8 +6,8 @@ const FORWARD: &str = "forward";
 const UP: &str = "up";
 const DOWN: &str = "down";
 
-pub fn run() -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("02", false)
+pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
+    let reader = get_file_reader("02", test_run)
         .unwrap_or_else(|err| {panic!("{}", err)});
 
     let mut position = 0;
