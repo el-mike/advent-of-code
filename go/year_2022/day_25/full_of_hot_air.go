@@ -3,6 +3,7 @@ package day_25
 import (
 	"el-mike/advent-of-code/go/common"
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -17,8 +18,13 @@ var SnafuDigitsMap = map[uint8]int{
 	'2': 2,
 }
 
+var SnafuDigitsNegativesMap = map[int]uint8{
+	3: '=',
+	4: '-',
+}
+
 func FullOfHotAir() {
-	scanner, err := common.GetFileScanner("./year_2022/day_25/" + common.TestInputFilename)
+	scanner, err := common.GetFileScanner("./year_2022/day_25/" + common.InputFilename)
 	if err != nil {
 		panic(err)
 	}
@@ -41,9 +47,7 @@ func FullOfHotAir() {
 		total += fromSnafu(snafu)
 	}
 
-	fmt.Println(total)
-
-	fmt.Println(toSnafu(total))
+	fmt.Printf("%d, snafu: %s\n", total, toSnafu(total))
 }
 
 func fromSnafu(snafu string) int {
@@ -62,11 +66,20 @@ func fromSnafu(snafu string) int {
 }
 
 func toSnafu(number int) string {
-	snafu := ""
+	var snafu string
 
-	for ; number != 0; {
-		snafu = fmt.Sprintf("%d%s", (number % NumberBase), snafu)
+	for number != 0 {
+		remainder := number % NumberBase
 		number /= NumberBase
+
+		remainderStr := strconv.Itoa(remainder)
+
+		if remainder <= 2 {
+			snafu = remainderStr + snafu
+		} else {
+			snafu = string(SnafuDigitsNegativesMap[remainder]) + snafu
+			number += 1
+		}
 	}
 
 	return snafu

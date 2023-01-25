@@ -59,5 +59,4 @@ An exercise in pathfinding and optimizing search space (blizzard positions perio
 
 ## Day 25
 
-- Part one: **XXms**
-- Part two: **XXms**
+- Part one: **191µs**
