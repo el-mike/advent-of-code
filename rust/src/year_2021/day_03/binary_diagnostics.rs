@@ -7,40 +7,59 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     let reader = get_file_reader("03", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
-    let mut position_counters: Vec<[i32; 2]> = vec![];
+    // Two different ways of creating Vectors.
+    let mut oxygen_candidates: Vec<String> = Vec::new();
+    let mut scrubber_candidates: Vec<String> = vec![];
 
     for line_result in reader.lines() {
         let line = line_result.unwrap_or_else(|err| { panic!("{}", err) });
 
-        for (i, c) in line.chars().enumerate() {
-            if position_counters.get(i).is_none() {
-                position_counters.push([0, 0]);
+        oxygen_candidates.push(line.clone());
+        scrubber_candidates.push(line.clone());
+    }
+
+    let mut i = 0;
+
+    while oxygen_candidates.len() > 1 || scrubber_candidates.len() > 1 {
+        if oxygen_candidates.len() > 1 {
+            let mut counter: [i32; 2] = [0, 0];
+
+            for candidate in oxygen_candidates {
+                if candidate.chars().nth(i).unwrap() == '0'
+                    { counter[0] += 1 } else { counter[1] += 1 }
             }
 
-            if c == '0' { position_counters[i][0] += 1 } else { position_counters[i][1] += 1 }
+            let bit_value = if counter[0] > counter[1] { '0' } else { '1' };
+
+            // Instead of using .into_iter().filter().collect(), we can use much simpler
+            // retain() method. Please note that retain works in-place.
+            oxygen_candidates.retain(
+                |item| { item.chars().nth(i).unwrap() == bit_value }
+            );
         }
+
+        if scrubber_candidates.len() > 1 {
+            let mut counter: [i32; 2] = [0, 0];
+            
+            for candidate in scrubber_candidates {
+                if candidate.chars().nth(i).unwrap() == '0'
+                { counter[0] += 1 } else { counter[1] += 1 }
+            }
+
+            let bit_value = if counter[0] <= counter[1] { '0' } else { '1' };
+            
+            scrubber_candidates.retain(
+                |item| { item.chars().nth(i).unwrap() == bit_value }
+            );
+        }
+
+        i += 1;
     }
 
-    // If we want to concatenate strings, we need to use String::new() -
-    // using just "" (&str, borrowed type) would not allow us to allocate more memory
-    // for growing string.
-    let mut gamma_bin = String::new();
-    let mut epsilon_bin = String::new();
+    let oxygen = binary_string_to_decimal(oxygen_candidates[0].as_str());
+    let scrubber = binary_string_to_decimal(scrubber_candidates[0].as_str());
 
-    for counter in position_counters {
-        if counter[0] > counter[1] {
-            gamma_bin.push('0');
-            epsilon_bin.push('1');
-        } else {
-            gamma_bin.push('1');
-            epsilon_bin.push('0');
-        }
-    }
-
-    let gamma = binary_string_to_decimal(gamma_bin.as_str());
-    let epsilon = binary_string_to_decimal(epsilon_bin.as_str());
-
-    println!("{}", gamma * epsilon);
+    println!("{}", oxygen * scrubber);
 
     Ok(())
 }
