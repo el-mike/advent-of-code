@@ -24,7 +24,10 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
         if oxygen_candidates.len() > 1 {
             let mut counter: [i32; 2] = [0, 0];
 
-            for candidate in oxygen_candidates {
+            // As slice is very important here!
+            // Without it, this for loop will be the owner of the String values inside
+            // the Vector, moving the value from outer scope.
+            for candidate in oxygen_candidates.as_slice() {
                 if candidate.chars().nth(i).unwrap() == '0'
                     { counter[0] += 1 } else { counter[1] += 1 }
             }
@@ -40,14 +43,14 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
 
         if scrubber_candidates.len() > 1 {
             let mut counter: [i32; 2] = [0, 0];
-            
-            for candidate in scrubber_candidates {
+
+            for candidate in scrubber_candidates.as_slice() {
                 if candidate.chars().nth(i).unwrap() == '0'
                 { counter[0] += 1 } else { counter[1] += 1 }
             }
 
             let bit_value = if counter[0] <= counter[1] { '0' } else { '1' };
-            
+
             scrubber_candidates.retain(
                 |item| { item.chars().nth(i).unwrap() == bit_value }
             );
