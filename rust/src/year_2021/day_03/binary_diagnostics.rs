@@ -3,6 +3,12 @@ use std::io::BufRead;
 use crate::common::file_utils::get_file_reader;
 use crate::common::number_utils::binary_string_to_decimal;
 
+#[derive(PartialEq, Eq)]
+enum BitCriteria {
+    MostCommon,
+    LeastCommon,
+}
+
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     let reader = get_file_reader("03", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
@@ -65,4 +71,40 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     println!("{}", oxygen * scrubber);
 
     Ok(())
+}
+
+fn filter_cadidates(
+    candidates: &mut Vec<String>,
+    current_position: usize,
+    criteria: BitCriteria,
+) {
+    let mut counter: [i32; 2] = [0, 0];
+
+    for candidate in candidates {
+        if candidate
+            .chars()
+            .nth(current_position)
+            .unwrap_or_else(|| { panic!("Couldn't read char") }) == '0' {
+            counter[0] += 1;
+        } else {
+            counter[1] += 1;
+        }
+    }
+
+    let bit_value: char;
+
+    if criteria == BitCriteria::MostCommon {
+        bit_value = if counter[0] > counter[1] { '0' } else { '1' };
+    } else {
+        bit_value = if counter[0] <= counter[1] { '0' } else { '1' };
+    }
+
+    candidates.retain(
+        |item| {
+            item
+                .chars()
+                .nth(current_position)
+                .unwrap_or_else(|| panic!("Couldn't read char")) == bit_value
+        });
+
 }
