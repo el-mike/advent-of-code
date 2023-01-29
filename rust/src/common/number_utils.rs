@@ -1,5 +1,3 @@
-
-
 pub fn binary_string_to_decimal(binary_string: &str) -> i32 {
     let mut result: i32 = 0;
     let mut coefficient: i32 = 1;
@@ -13,4 +11,22 @@ pub fn binary_string_to_decimal(binary_string: &str) -> i32 {
     }
 
     result
+}
+
+pub fn split_and_parse(numbers: &str, split_by: char) -> Vec<i32> {
+    numbers
+        .split(split_by)
+        .map(|x| {
+            x.parse::<i32>().unwrap_or_else(|err| { panic!("{}", err) })
+        })
+        .collect()
+}
+
+pub fn split_by_whitespace_and_parse(numbers: &str) -> Vec<i32> {
+    numbers
+        .split_whitespace()
+        .map(|x| {
+            x.parse().unwrap_or_else(|err| { panic!("{}", err) })
+        })
+        .collect()
 }

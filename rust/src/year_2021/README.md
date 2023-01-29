@@ -9,3 +9,8 @@
 ## Day 3
 
 - part two: **326µs**
+
+## Day 4
+
+- part one: **633µs**
+- part two: **XXµs**
