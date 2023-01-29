@@ -28,38 +28,11 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
 
     while oxygen_candidates.len() > 1 || scrubber_candidates.len() > 1 {
         if oxygen_candidates.len() > 1 {
-            let mut counter: [i32; 2] = [0, 0];
-
-            // As slice is very important here!
-            // Without it, this for loop will be the owner of the String values inside
-            // the Vector, moving the value from outer scope.
-            for candidate in oxygen_candidates.as_slice() {
-                if candidate.chars().nth(i).unwrap() == '0'
-                    { counter[0] += 1 } else { counter[1] += 1 }
-            }
-
-            let bit_value = if counter[0] > counter[1] { '0' } else { '1' };
-
-            // Instead of using .into_iter().filter().collect(), we can use much simpler
-            // retain() method. Please note that retain works in-place.
-            oxygen_candidates.retain(
-                |item| { item.chars().nth(i).unwrap() == bit_value }
-            );
+            oxygen_candidates = filter_candidates(&oxygen_candidates, i, BitCriteria::MostCommon);
         }
 
         if scrubber_candidates.len() > 1 {
-            let mut counter: [i32; 2] = [0, 0];
-
-            for candidate in scrubber_candidates.as_slice() {
-                if candidate.chars().nth(i).unwrap() == '0'
-                { counter[0] += 1 } else { counter[1] += 1 }
-            }
-
-            let bit_value = if counter[0] <= counter[1] { '0' } else { '1' };
-
-            scrubber_candidates.retain(
-                |item| { item.chars().nth(i).unwrap() == bit_value }
-            );
+            scrubber_candidates = filter_candidates(&scrubber_candidates, i, BitCriteria::LeastCommon);
         }
 
         i += 1;
@@ -73,11 +46,11 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn filter_cadidates(
-    candidates: &mut Vec<String>,
+fn filter_candidates(
+    candidates: &Vec<String>,
     current_position: usize,
     criteria: BitCriteria,
-) {
+) -> Vec<String> {
     let mut counter: [i32; 2] = [0, 0];
 
     for candidate in candidates {
@@ -99,12 +72,14 @@ fn filter_cadidates(
         bit_value = if counter[0] <= counter[1] { '0' } else { '1' };
     }
 
-    candidates.retain(
-        |item| {
+    candidates
+        .iter()
+        .cloned()
+        .filter(|item| {
             item
                 .chars()
                 .nth(current_position)
-                .unwrap_or_else(|| panic!("Couldn't read char")) == bit_value
-        });
-
+                .unwrap_or_else(|| { panic!("Couldn't read char") }) == bit_value
+        })
+        .collect()
 }
