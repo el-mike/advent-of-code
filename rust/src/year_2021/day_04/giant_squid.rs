@@ -20,7 +20,7 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     // We can use HashSet, as even when value exists more than once in given row/column,
     // remove operation would pick all of them, therefore we can reduce the data complexity
     // to hash set.
-    let mut board_sets: Vec<Vec<HashSet<i32>>> = Vec::new();
+    let mut boards: Vec<Vec<HashSet<i32>>> = Vec::new();
 
     loop {
         let rows = lines
@@ -57,29 +57,44 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
             sets.push(HashSet::from_iter(row));
         }
 
-        board_sets.push(sets);
+        boards.push(sets);
     }
 
-    'outer: for number in &numbers {
-        for sets in board_sets.iter_mut() {
+
+    'numbers: for number in &numbers {
+        let mut ids_to_remove: Vec<usize> = Vec::new();
+        let num_boards = boards.len();
+
+        'boards: for (i, sets) in boards.iter_mut().enumerate() {
             for set in sets.iter_mut() {
                 set.remove(number);
 
                 if set.is_empty() {
-                    let score = sets
-                        // Since sets contains both rows and columns,
-                        // We only  take the first half (columns) to calculate
-                        // the remaining sum.
-                        .clone()[0..5]
-                        .iter()
-                        .flatten()
-                        .sum::<i32>();
+                    if num_boards == 1 {
+                        let score = boards[0]
+                            // Since sets contains both rows and columns,
+                            // We only  take the first half (columns) to calculate
+                            // the remaining sum.
+                            .clone()[0..5]
+                            .iter()
+                            .flatten()
+                            .sum::<i32>();
 
                         println!("{}", score * *number);
-                    break 'outer;
+                        break 'numbers;
+                    } else {
+                        ids_to_remove.push(i);
+                        continue 'boards;
+                    }
                 }
             }
         }
+
+        let mut i = 0;
+        boards.retain(|_| {
+            i += 1;
+            !ids_to_remove.contains(&(i - 1))
+        });
     }
 
     Ok(())
