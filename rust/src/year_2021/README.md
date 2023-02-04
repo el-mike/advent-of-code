@@ -13,4 +13,4 @@
 ## Day 4
 
 - part one: **633µs**
-- part two: **1.03ms**
+- part two: **996µs**

@@ -41,22 +41,26 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
             break;
         }
 
-        let mut sets: Vec<HashSet<i32>>= Vec::new();
+        let mut sets: Vec<HashSet<i32>> = Vec::new();
+        let mut cols: Vec<HashSet<i32>> = Vec::from([
+            HashSet::new(),
+            HashSet::new(),
+            HashSet::new(),
+            HashSet::new(),
+            HashSet::new()
+        ]);
 
-        for x in 0..5 {
-            let mut set = HashSet::new();
-
-            for y in 0..5 {
-                set.insert(board[y][x]);
-            }
-
-            sets.push(set);
-        }
 
         for row in board {
+            for x in 0..5 {
+                cols[x].insert(row[x]);
+            }
+
             sets.push(HashSet::from_iter(row));
         }
 
+        sets.append(&mut cols);
+        
         boards.push(sets);
     }
 
