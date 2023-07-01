@@ -13,8 +13,8 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     let numbers = split_and_parse(
         lines
             .next()
-            .unwrap_or_else(|| { panic!("Couldn't advance iterator") })
-            .unwrap_or_else(|err| { panic!("{}", err) }).as_str(),
+            .unwrap_or_else(|| panic!("Couldn't advance iterator"))
+            .unwrap_or_else(|err| panic!("{}", err)).as_str(),
         ',');
 
     // We can use HashSet, as even when value exists more than once in given row/column,
@@ -50,7 +50,6 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
             HashSet::new()
         ]);
 
-
         for row in board {
             for x in 0..5 {
                 cols[x].insert(row[x]);
@@ -60,7 +59,7 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
         }
 
         sets.append(&mut cols);
-        
+
         boards.push(sets);
     }
 
