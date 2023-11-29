@@ -30,7 +30,3 @@ pub fn split_by_whitespace_and_parse(numbers_str: &str) -> Vec<i32> {
         })
         .collect()
 }
-
-pub fn get_integers_from_string(numbers_str: &str) -> Vec<i32> {
-
-}
