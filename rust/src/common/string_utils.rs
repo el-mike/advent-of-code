@@ -1,19 +1,19 @@
 use regex::Regex;
 
-fn get_groups_from_sequences(sequences: Vec<&str>) -> String {
+fn get_group_from_sequences(sequences: Vec<&str>) -> String {
     let group = sequences.into_iter().fold(String::new(), |a, b| {
         if a.is_empty() {
-            return format!("{}", b);
+            return b.to_string();
         }
 
-        return format!("{}|{}", a, b)
+        return format!("{}|{}", a, b);
     });
 
     return format!("({})", group);
 }
 
 pub fn get_occurrences(hay: &str, sequences: Vec<&str>) -> Vec<String> {
-    let groups = get_groups_from_sequences(sequences);
+    let groups = get_group_from_sequences(sequences);
 
     let re_string = format!(r"{}", groups);
     let re = Regex::new(re_string.as_str()).unwrap();
