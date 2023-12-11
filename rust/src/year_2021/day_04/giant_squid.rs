@@ -5,7 +5,7 @@ use crate::common::file_utils::get_file_reader;
 use crate::common::number_utils::{split_and_parse, split_by_whitespace_and_parse};
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("04", test_run)
+    let reader = get_file_reader("2021", "04", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut lines = reader.lines();

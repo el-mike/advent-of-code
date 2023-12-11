@@ -6,7 +6,7 @@ use crate::common::file_utils::get_file_reader;
 const WINDOW_SIZE: usize = 3;
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("01", test_run)
+    let reader = get_file_reader("2021", "01", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut count: i32 = 0;

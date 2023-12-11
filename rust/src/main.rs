@@ -1,15 +1,16 @@
 mod common;
 mod year_2021;
+mod year_2023;
 
 use std::env;
 use std::time::Instant;
-use crate::year_2021::day_05::hydrothermal_venture;
+use crate::year_2023::day_01::trebuchet;
 
 fn main() {
     let test_run = is_test_run();
     let start = Instant::now();
 
-    hydrothermal_venture::run(test_run).unwrap();
+    trebuchet::run(test_run).unwrap();
 
     let duration = start.elapsed();
 
