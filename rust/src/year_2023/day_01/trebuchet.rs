@@ -38,8 +38,8 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
         let first = occurrences.first().expect("First value not found");
         let last = occurrences.last().expect("Last value not found");
 
-        let x: u32 = if first.len() == 1 { first.parse::<u32>().unwrap() } else { parse_word_digit(first.as_str(), true) as u32 };
-        let y: u32 = if last.len() == 1 { last.parse::<u32>().unwrap() } else { parse_word_digit(last.as_str(), false) as u32 };
+        let x: u32 = first.parse().unwrap_or_else(|_| { parse_word_digit(first.as_str(), true) as u32 });
+        let y: u32 = last.parse().unwrap_or_else(|_| { parse_word_digit(last.as_str(), true) as u32 });
 
         sum += (x * 10) + y;
     }

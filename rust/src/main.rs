@@ -5,6 +5,7 @@ mod year_2023;
 use std::env;
 use std::time::Instant;
 use crate::year_2023::day_01::trebuchet;
+use crate::year_2023::day_02::cube_conundrum;
 
 fn main() {
     let test_run = is_test_run();
