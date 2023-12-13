@@ -5,12 +5,14 @@ use crate::common::file_utils::get_file_reader;
 use crate::year_2023::day_03::coord::Coord;
 use crate::year_2023::day_03::part_number::PartNumber;
 
+const GEAR_CHAR: char = '*';
+
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     let reader = get_file_reader("2023", "03", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
-    let mut numbers: Vec<PartNumber> = Vec::new();
-    let mut symbol_coords_map: HashMap<i32, Vec<i32>> = HashMap::new();
+    let mut gear_symbols_coords: Vec<Coord> = Vec::new();
+    let mut part_numbers_map: HashMap<i32, Vec<PartNumber>> = HashMap::new();
 
     let mut max_y: i32 = 0;
 
@@ -21,7 +23,7 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
         let mut length: u8 = 0;
         let mut x_start: i32 = -1;
 
-        symbol_coords_map.insert(y, Vec::new());
+        part_numbers_map.insert(y, Vec::new());
 
         for (x, char) in line.chars().enumerate() {
             let mut break_number = false;
@@ -39,15 +41,16 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
             } else {
                 break_number = true;
 
-                if char != '.' {
-                    symbol_coords_map.get_mut(&(y)).unwrap().push(x as i32);
+                if char == GEAR_CHAR  {
+                    gear_symbols_coords.push(Coord::new(x as i32, y));
                 }
             }
 
             if break_number && !number_string.is_empty() {
                 let value = number_string.parse::<u32>().expect("Cannot parse number string");
 
-                numbers.push(PartNumber::new(Coord::new(x_start, y), length, value));
+
+                part_numbers_map.get_mut(&y).unwrap().push(PartNumber::new(Coord::new(x_start, y), length, value));
 
                 number_string = String::new();
                 x_start = -1;
@@ -60,15 +63,42 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
 
     let mut sum: u32 = 0;
 
-    for number in numbers {
-        let y = number.coord.y;
-        let x_start = number.coord.x;
-        let x_end = (number.coord.x + number.length as i32) - 1;
+    for coord in gear_symbols_coords {
+        let y = coord.y;
 
-        if (y > 0 && check_row(&symbol_coords_map, y - 1, x_start, x_end))
-            || (y < max_y && check_row(&symbol_coords_map, y + 1, x_start, x_end))
-            || check_row(&symbol_coords_map, y, x_start, x_end) {
-            sum += number.value;
+        let mut adjacent_values: Vec<u32> = Vec::new();
+
+
+        if y > 0 {
+            let mut values = check_row(&part_numbers_map, y - 1, &coord);
+
+            if values.len() > 2 {
+                continue;
+            }
+
+            adjacent_values.append(&mut values);
+        }
+
+        if y < max_y {
+            let mut values = check_row(&part_numbers_map, y + 1, &coord);
+
+            if values.len() > 2 {
+                continue;
+            }
+
+            adjacent_values.append(&mut values);
+        }
+
+        let mut values = check_row(&part_numbers_map, y, &coord);
+
+        if values.len() > 2 {
+            continue;
+        }
+
+        adjacent_values.append(&mut values);
+
+        if adjacent_values.len() == 2 {
+            sum += adjacent_values[0] * adjacent_values[1];
         }
     }
 
@@ -77,14 +107,20 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn check_row(symbol_coords_map: &HashMap<i32, Vec<i32>>, y: i32, x_start: i32, x_end: i32) -> bool {
-    let symbol_coords = symbol_coords_map.get(&y).unwrap();
+// Returns part number values that are adjacent to the gear symbol in given row.
+fn check_row(part_numbers_map: &HashMap<i32, Vec<PartNumber>>, y: i32, gear_coord: &Coord) -> Vec<u32> {
+    let part_numbers = part_numbers_map.get(&y).unwrap();
 
-    for symbol_x in symbol_coords {
-        if *symbol_x >= (x_start - 1) && *symbol_x <= (x_end + 1) {
-            return true;
+    let mut values: Vec<u32> = Vec::new();
+
+    for part_number in part_numbers {
+        let x_start = part_number.coord.x;
+        let x_end = (part_number.coord.x + part_number.length as i32) - 1;
+
+        if gear_coord.x >= (x_start - 1) && gear_coord.x <= (x_end + 1) {
+            values.push(part_number.value);
         }
     }
 
-    false
+    return values;
 }
