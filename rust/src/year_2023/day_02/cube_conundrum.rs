@@ -17,10 +17,8 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
     for(_, line_result) in (0_i32..).zip(reader.lines()) {
         let line = line_result.expect("Error reading line");
 
-        let id_re = Regex::new(r"\d+").unwrap();
         let cubes_re = Regex::new(r"(\d+\s(red|green|blue))").unwrap();
 
-        let id: u8 = id_re.find(line.as_str()).unwrap().as_str().parse::<u8>().unwrap();
         let cubes: Vec<&str> = cubes_re.find_iter(line.as_str()).map(|m| m.as_str()).collect();
 
         let mut min_red: u32 = 0;
@@ -51,12 +49,10 @@ pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
             }
         }
 
-        sum += (min_red * min_green * min_blue) as u32;
+        sum += (min_red * min_green * min_blue);
     }
 
     println!("\n\n{}", sum);
 
     Ok(())
 }
-
-//204 - too low
