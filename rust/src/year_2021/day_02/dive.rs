@@ -7,7 +7,7 @@ const UP: &str = "up";
 const DOWN: &str = "down";
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("2021", "02", test_run)
+    let (reader, _) = get_file_reader("2021", "02", test_run)
         .unwrap_or_else(|err| {panic!("{}", err)});
 
     let mut position = 0;

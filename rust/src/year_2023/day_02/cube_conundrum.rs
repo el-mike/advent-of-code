@@ -9,7 +9,7 @@ const GREEN_CUBE: &str = "green";
 const BLUE_CUBE: &str = "blue";
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("2023", "02", test_run)
+    let (reader, _) = get_file_reader("2023", "02", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut sum: u32 = 0;

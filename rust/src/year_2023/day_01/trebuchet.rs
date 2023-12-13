@@ -21,7 +21,7 @@ fn parse_word_digit(word: &str, is_first: bool) -> u8 {
 // 55148 - too low
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("2023", "01", test_run)
+    let (reader, _) = get_file_reader("2023", "01", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut sum: u32 = 0;

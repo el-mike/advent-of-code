@@ -8,7 +8,7 @@ use crate::year_2023::day_03::part_number::PartNumber;
 const GEAR_CHAR: char = '*';
 
 pub fn run(test_run: bool) -> Result<(), Box<dyn Error>> {
-    let reader = get_file_reader("2023", "03", test_run)
+    let (reader, _) = get_file_reader("2023", "03", test_run)
         .unwrap_or_else(|err| { panic!("{}", err) });
 
     let mut gear_symbols_coords: Vec<Coord> = Vec::new();
