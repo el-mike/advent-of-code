@@ -4,13 +4,13 @@ mod year_2023;
 
 use std::env;
 use std::time::Instant;
-use crate::year_2023::day_03::gear_ratios;
+use crate::year_2023::day_04::scratchcards;
 
 fn main() {
     let test_run = is_test_run();
     let start = Instant::now();
 
-    gear_ratios::run(test_run).unwrap();
+    scratchcards::run(test_run).unwrap();
 
     let duration = start.elapsed();
 
